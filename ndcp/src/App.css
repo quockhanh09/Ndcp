@@ -476,6 +476,18 @@
   box-shadow: 0 0 0 3px rgba(60, 100, 200, 0.12), 0 0 10px rgba(60, 100, 200, 0.1);
 }
 
+.field input.readonly-field {
+  background: rgba(14, 26, 60, 0.5);
+  color: #8ab0d8;
+  cursor: default;
+  border-color: rgba(55, 90, 180, 0.15);
+}
+
+.field input.readonly-field:focus {
+  border-color: rgba(55, 90, 180, 0.15);
+  box-shadow: none;
+}
+
 .primary-action {
   margin-top: 4px;
   width: 100%;

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import { cities, getWardsByCity, getActiveRegion } from './data/vietnamLocations'
 
 function DocumentIcon() {
   return (
@@ -123,15 +124,6 @@ const businessTypes = [
   { id: 'hotel', label: 'Khách sạn', icon: HotelIcon },
 ]
 
-const regions = [
-  { id: 'special', label: 'Đô thị đặc biệt (Hà Nội, TP.HCM)', multiplier: 1.0 },
-  { id: 'grade1', label: 'Đô thị loại I (Đà Nẵng, Cần Thơ, Hải Phòng)', multiplier: 0.8 },
-  { id: 'grade2', label: 'Đô thị loại II (Huế, Nha Trang, Biên Hòa)', multiplier: 0.5 },
-  { id: 'grade3', label: 'Đô thị loại III (thị xã, tỉnh lẻ)', multiplier: 0.2 },
-  { id: 'industrial', label: 'Khu Công nghiệp / KKT đặc biệt', multiplier: 0.1 },
-  { id: 'rural', label: 'Nông thôn / Vùng sâu / Miền núi', multiplier: 0.1 },
-]
-
 const parameterCards = [
   {
     title: 'T1',
@@ -164,8 +156,6 @@ const parameterCards = [
     tone: 'emerald',
   },
 ]
-
-const formatMultiplier = (multiplier) => `x${multiplier.toFixed(2).replace('.', ',')}`
 
 const baseSalary = 2_530_000
 const vatRate = 0.08
@@ -265,7 +255,6 @@ const fullParameterRows = [
 ]
 
 const formatVnd = (value) => `${new Intl.NumberFormat('vi-VN').format(Math.round(value))} ₫`
-const formatVndPlain = (value) => `${new Intl.NumberFormat('vi-VN').format(Math.round(value))} VND`
 const formatNumber = (value, fractionDigits = 2) =>
   new Intl.NumberFormat('vi-VN', {
     minimumFractionDigits: 0,
@@ -286,7 +275,8 @@ function calculateTierQuantity(area, min, max) {
 
 function App() {
   const [selectedType, setSelectedType] = useState(businessTypes[0].id)
-  const [selectedRegion, setSelectedRegion] = useState(regions[0].id)
+  const [selectedCity, setSelectedCity] = useState(cities[0].id)
+  const [selectedWard, setSelectedWard] = useState(getWardsByCity(cities[0].id)[0]?.id ?? '')
   const [area, setArea] = useState('')
   const [karaokeCounts, setKaraokeCounts] = useState({
     roomSmall: '0',
@@ -302,7 +292,7 @@ function App() {
 
   const clearResult = () => setFeeResult(null)
 
-  const activeRegion = regions.find((item) => item.id === selectedRegion) ?? regions[0]
+  const activeRegion = getActiveRegion(selectedCity, selectedWard)
   const isKaraoke = selectedType === 'karaoke'
   const isHotel = selectedType === 'hotel'
   const isCafe = selectedType === 'cafe'
@@ -796,14 +786,12 @@ function App() {
         </div>
         <div className="hero-copy">
           <h1>Biểu phí theo Nghị định 17/2023/NĐ-CP</h1>
-          <p>
-            Công thức phân bậc lũy tiến 3 tầng + trần phí. Áp dụng cho 10 loại hình kinh doanh theo Phụ lục 2.
-          </p>
-          <p>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Hệ số điều chỉnh</p>
+          <p> 
+             Mức lương cơ sở : 2.530.000
+              </p>
           <div className="hero-math">
-            <span>F</span>
-            <span>=</span>
-            <span>MIN(A phân bậc, CAP) × B × M</span>
+            
+            <span>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Hệ số điều chỉnh</span>
           </div>
         </div>
       </section>
@@ -847,20 +835,48 @@ function App() {
         <div className="form-layout">
           <div className="field-group">
             <label className="field">
-              <span>Vùng địa lý</span>
+              <span>Tỉnh / Thành phố</span>
               <select
-                value={selectedRegion}
+                value={selectedCity}
                 onChange={(event) => {
-                  setSelectedRegion(event.target.value)
+                  setSelectedCity(event.target.value)
+                  setSelectedWard(getWardsByCity(event.target.value)[0]?.id ?? '')
                   clearResult()
                 }}
               >
-                {regions.map((region) => (
-                  <option key={region.id} value={region.id}>
-                    {region.label} — {formatMultiplier(region.multiplier)}
+                {cities.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {city.name}
                   </option>
                 ))}
               </select>
+            </label>
+
+            <label className="field">
+              <span>Phường / Xã / Thị trấn</span>
+              <select
+                value={selectedWard}
+                onChange={(event) => {
+                  setSelectedWard(event.target.value)
+                  clearResult()
+                }}
+              >
+                {getWardsByCity(selectedCity).map((ward) => (
+                  <option key={ward.id} value={ward.id}>
+                    {ward.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="field">
+              <span>Phân loại đô thị</span>
+              <input
+                type="text"
+                readOnly
+                value={activeRegion?.label ?? ''}
+                className="readonly-field"
+              />
             </label>
 
             {isKaraoke ? (
@@ -968,81 +984,37 @@ function App() {
         <section className="fee-result-stack" aria-live="polite">
           <article className="fee-summary-card">
             <div className="fee-summary-body">
+              <div className="fee-hero">
+                <p>Phí bản quyền năm (theo NĐ 17/2023)</p>
+                <div className="fee-hero-sub">
+                  <span>Số tiền: {formatVnd(feeResult.annualFee)}</span>
+                  <span>Thuế GTGT 8%: {formatVnd(feeResult.vat)}</span>
+                  <span className="fee-total-final">Tổng cần thanh toán: {formatVnd(feeResult.totalWithVat)}</span>
+                </div>
+              </div>
+
               <div className="fee-detail-card">
                 <h4>Chi tiết tính phí</h4>
-                <div className="calc-steps">
-                  <div className="calc-step">
-                    <span>Bước 1</span>
-                    <p>
-                      B (lương cơ sở) = <strong>{formatVndPlain(baseSalary)}</strong>
-                    </p>
-                  </div>
-
-                  <div className="calc-step">
-                    <span>Bước 2</span>
-                    <p>
-                      A (hệ số) = <strong>{formatNumber(feeResult.totalA)}</strong>
-                    </p>
-                    <p className="calc-step-sub">
-                      {feeResult.isCafe
-                        ? `A cộng theo 3 bậc riêng của quán cafe và chặn tối đa CAP = ${formatNumber(cafeCap)}.`
-                        : feeResult.isRestaurant
-                          ? `A cộng theo 3 bậc riêng của nhà hàng (0-50, 50-100, >100 m²) và chặn tối đa CAP = ${formatNumber(restaurantCap)}.`
-                          : feeResult.isShop
-                            ? `A cộng theo 3 bậc riêng của cửa hàng (0-50, 50-100, >100 m²) và chặn tối đa CAP = ${formatNumber(shopCap)}.`
-                            : feeResult.isFitness
-                              ? `A cộng theo 3 bậc riêng của câu lạc bộ thể dục (0-50, 50-100, >100 m²) và chặn tối đa CAP = ${formatNumber(fitnessCap)}.`
-                              : feeResult.isBar
-                                ? `A cộng theo 3 bậc riêng của quán bar (0-50, 50-200, >200 m²) và chặn tối đa CAP = ${formatNumber(barCap)}.`
-                                : feeResult.isPlayground
-                                  ? `A cộng theo 3 bậc riêng của khu vui chơi (0-200, 200-500, >500 m²) và chặn tối đa CAP = ${formatNumber(playgroundCap)}.`
-                                  : feeResult.isMall
-                                    ? `A cộng theo 3 bậc riêng của trung tâm thương mại: bậc 1 cố định 1,5 cho đến 200 m²; bậc 2 cộng 0,003/m²; bậc 3 cộng 0,002/m²; CAP = ${formatNumber(mallCap)}.`
-                                    : feeResult.isSupermarket
-                                      ? `A cộng theo 3 bậc riêng của siêu thị: bậc 1 cố định 1,25 cho đến 500 m²; bậc 2 cộng 0,003/m²; bậc 3 cộng 0,002/m²; CAP = ${formatNumber(supermarketCap)}.`
-                                : feeResult.isHotel
-                                  ? 'A của khách sạn được tính riêng theo số phòng và hạng sao (0,03 hoặc 0,02 mỗi phòng/năm).'
-                          : 'A được cộng dồn từ bảng bậc bên dưới, sau đó lấy tổng để nhân với B.'}
-                    </p>
-                  </div>
-
-                  <div className="calc-step">
-                    <span>Bước 3</span>
-                    <p>
-                      M ({feeResult.region.id}) = <strong>{formatNumber(feeResult.region.multiplier, 2)}</strong>
-                    </p>
-                  </div>
-
-                  <div className="calc-step calc-step-final">
-                    <span>Bước 4</span>
-                    <p>
-                      F = {formatNumber(feeResult.totalA)} × {formatNumber(baseSalary, 0)} ×{' '}
-                      {formatNumber(feeResult.region.multiplier, 2)} = <strong>{formatVnd(feeResult.annualFee)}</strong>
-                    </p>
-                  </div>
-                </div>
               </div>
 
               <div className="fee-table-card">
                 <table>
                   <thead>
                     <tr>
-                      <th>Bậc</th>
-                      <th>Khoảng</th>
-                      <th>Số lượng</th>
+                      <th>Khoảng diện tích</th>
+                      <th>Diện tích</th>
+                      <th>Thành tiền</th>
                       <th>Hệ số/m²</th>
-                      <th>Đóng góp A</th>
+                      <th>Tổng</th>
                     </tr>
                   </thead>
                   <tbody>
                     {feeResult.rows.map((row) => (
                       <tr key={row.label}>
-                        <td><strong>{row.label}</strong></td>
-                        <td>{row.range}</td>
-                        <td>
-                          {formatNumber(row.quantity)} {row.unit}
-                        </td>
-                        <td>{formatNumber(row.rate, 2)}</td>
+                        <td><strong>{row.range}</strong></td>
+                        <td>{formatNumber(row.quantity)} {row.unit}</td>
+                        <td>{formatNumber(row.quantity)} x {formatNumber(row.rate, 2)} x {formatNumber(baseSalary, 0)}</td>
+                        <td>{formatNumber(row.rate, 2)} / {row.unit}</td>
                         <td><strong>{formatNumber(row.contribution)}</strong></td>
                       </tr>
                     ))}
@@ -1052,15 +1024,6 @@ function App() {
                     </tr>
                   </tbody>
                 </table>
-              </div>
-
-              <div className="fee-hero fee-hero-bottom">
-                <p>Phí bản quyền năm (theo NĐ 17/2023)</p>
-                <div className="fee-hero-sub">
-                  <span>Số tiền: {formatVnd(feeResult.annualFee)}</span>
-                  <span>Thuế GTGT 8%: {formatVnd(feeResult.vat)}</span>
-                  <span className="fee-total-final">Tổng cần thanh toán: {formatVnd(feeResult.totalWithVat)}</span>
-                </div>
               </div>
             </div>
           </article>
