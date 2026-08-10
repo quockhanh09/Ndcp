@@ -1,8 +1,12 @@
 :root {
-  --text: #10243c;
-  --muted: #5d6b7f;
-  --bg: #e6f3f2;
-  --border: rgba(15, 23, 42, 0.08);
+  --text: #dce8f8;
+  --muted: #3d5470;
+  --bg: #0b1525;
+  --neon: #ffffff;
+  --neon-glow: rgba(255, 255, 255, 0.35);
+  --glass-bg: rgba(9, 18, 44, 0.7);
+  --glass-border: rgba(65, 105, 200, 0.22);
+  --glass-highlight: inset 0 1px 0 rgba(100, 160, 255, 0.08);
   --heading: 'Georgia', 'Times New Roman', serif;
   --body: 'Trebuchet MS', 'Segoe UI', sans-serif;
   --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
@@ -11,15 +15,15 @@
   letter-spacing: 0.01em;
   color: var(--text);
   background:
-    radial-gradient(circle at top right, rgba(13, 148, 136, 0.2), transparent 24%),
-    radial-gradient(circle at 20% 20%, rgba(8, 145, 178, 0.13), transparent 20%),
-    radial-gradient(circle at bottom left, rgba(15, 118, 110, 0.14), transparent 24%),
+    radial-gradient(ellipse 80% 60% at 0% 50%, rgba(20, 60, 130, 0.55), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 20%, rgba(10, 30, 80, 0.3), transparent 50%),
+    radial-gradient(ellipse 40% 50% at 60% 100%, rgba(8, 25, 65, 0.4), transparent 50%),
     var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 * {
@@ -60,6 +64,6 @@ p {
 }
 
 ::selection {
-  background: rgba(13, 148, 136, 0.2);
-  color: #08111f;
+  background: rgba(0, 255, 238, 0.2);
+  color: #fff;
 }

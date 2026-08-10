@@ -799,40 +799,13 @@ function App() {
           <p>
             Công thức phân bậc lũy tiến 3 tầng + trần phí. Áp dụng cho 10 loại hình kinh doanh theo Phụ lục 2.
           </p>
+          <p>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Hệ số điều chỉnh</p>
           <div className="hero-math">
             <span>F</span>
             <span>=</span>
             <span>MIN(A phân bậc, CAP) × B × M</span>
           </div>
         </div>
-      </section>
-
-      <section className="section-card parameters-card">
-        <div className="section-head">
-          <h2>Cách đọc bảng tham số</h2>
-        </div>
-
-        <div className="parameter-grid">
-          {parameterCards.map((card) => (
-            <article key={card.title} className={`parameter-card tone-${card.tone}`}>
-              <strong>{card.title}</strong>
-              <p>{card.body}</p>
-            </article>
-          ))}
-        </div>
-
-        <div className="example-box">
-          <h3>Ví dụ - Quán cafe 30m², vùng đô thị đặc biệt</h3>
-          <p>Bậc 1 (0-15m²): A = 0,35 × (15/15) = 0,35</p>
-          <p>Bậc 2 (15-30m²): A += 0,04 × (30-15) = +0,60</p>
-          <p>Tổng A = 0,95 → chưa vượt CAP=8 → A = 0,95</p>
-          <div className="example-divider" />
-          <p><strong>F = 0,95 × 2.530.000 × 1,0 = 2.403.500 VND/năm</strong></p>
-        </div>
-
-        <p className="note-text">
-          Lưu ý: Các tham số trong bảng dưới đây cần được đối chiếu với văn bản chính thức NĐ 17/2023 và Thông tư hướng dẫn trước khi áp dụng.
-        </p>
       </section>
 
       <section className="section-card chooser-card">
@@ -1094,46 +1067,6 @@ function App() {
         </section>
       ) : null}
 
-      <section className="section-card full-params-card">
-        <div className="section-head">
-          <h2>Tham số phân bậc đầy đủ (NĐ 17/2023)</h2>
-        </div>
-
-        <div className="full-params-table-wrap">
-          <table className="full-params-table">
-            <thead>
-              <tr>
-                <th>Loại hình</th>
-                <th>Đơn vị</th>
-                <th>T1</th>
-                <th>T2</th>
-                <th>A_BASE</th>
-                <th>R2/ĐV</th>
-                <th>R3/ĐV</th>
-                <th>CAP</th>
-              </tr>
-            </thead>
-            <tbody>
-              {fullParameterRows.map((row) => (
-                <tr key={row.type}>
-                  <td>{row.type}</td>
-                  <td>{row.unit}</td>
-                  <td>{row.t1}</td>
-                  <td>{row.t2}</td>
-                  <td><strong>{row.aBase}</strong></td>
-                  <td>{row.r2}</td>
-                  <td>{row.r3}</td>
-                  <td className="cap-cell">{row.cap}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <p className="full-params-note">
-          * Bậc 1 flat (không tuyến tính) - A cố định bất kể diện tích. B = 2.530.000 VNĐ.
-        </p>
-      </section>
     </main>
   )
 }
