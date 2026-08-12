@@ -353,7 +353,7 @@ function App() {
             range: '0 - 15 m²',
             min: 0,
             max: 15,
-            rate: cafeTier1Base / cafeTier1Limit,
+            rate: cafeTier1Base,
             baseCoeff: cafeTier1Base,
             isFirstTier: true,
           },
@@ -378,7 +378,7 @@ function App() {
 
           const contribution =
             rule.isFirstTier
-              ? cafeTier1Base * (quantity / cafeTier1Limit)
+              ? (quantity > 0 ? cafeTier1Base : 0)
               : quantity * rule.rate
 
           const formulaText = rule.isFirstTier
@@ -404,7 +404,7 @@ function App() {
             range: '0 - 50 m²',
             min: 0,
             max: 50,
-            rate: restaurantTier1Base / restaurantTier1Limit,
+            rate: restaurantTier1Base,
             baseCoeff: restaurantTier1Base,
             isFirstTier: true,
           },
@@ -429,7 +429,7 @@ function App() {
 
           const contribution =
             rule.isFirstTier
-              ? restaurantTier1Base * (quantity / restaurantTier1Limit)
+              ? (quantity > 0 ? restaurantTier1Base : 0)
               : quantity * rule.rate
 
           const formulaText = rule.isFirstTier
@@ -455,7 +455,7 @@ function App() {
             range: '0 - 50 m²',
             min: 0,
             max: 50,
-            rate: shopTier1Base / shopTier1Limit,
+            rate: shopTier1Base,
             baseCoeff: shopTier1Base,
             isFirstTier: true,
           },
@@ -480,7 +480,7 @@ function App() {
 
           const contribution =
             rule.isFirstTier
-              ? shopTier1Base * (quantity / shopTier1Limit)
+              ? (quantity > 0 ? shopTier1Base : 0)
               : quantity * rule.rate
 
           const formulaText = rule.isFirstTier
@@ -506,7 +506,7 @@ function App() {
             range: '0 - 50 m²',
             min: 0,
             max: 50,
-            rate: fitnessTier1Base / fitnessTier1Limit,
+            rate: fitnessTier1Base,
             baseCoeff: fitnessTier1Base,
             isFirstTier: true,
           },
@@ -531,7 +531,7 @@ function App() {
 
           const contribution =
             rule.isFirstTier
-              ? fitnessTier1Base * (quantity / fitnessTier1Limit)
+              ? (quantity > 0 ? fitnessTier1Base : 0)
               : quantity * rule.rate
 
           const formulaText = rule.isFirstTier
@@ -557,7 +557,7 @@ function App() {
             range: '0 - 50 m²',
             min: 0,
             max: barTier1Limit,
-            rate: barTier1Base / barTier1Limit,
+            rate: barTier1Base,
             baseCoeff: barTier1Base,
             isFirstTier: true,
           },
@@ -582,7 +582,7 @@ function App() {
 
           const contribution =
             rule.isFirstTier
-              ? barTier1Base * (quantity / barTier1Limit)
+              ? (quantity > 0 ? barTier1Base : 0)
               : quantity * rule.rate
 
           const formulaText = rule.isFirstTier
@@ -608,7 +608,7 @@ function App() {
             range: '0 - 200 m²',
             min: 0,
             max: playgroundTier1Limit,
-            rate: playgroundTier1Base / playgroundTier1Limit,
+            rate: playgroundTier1Base,
             baseCoeff: playgroundTier1Base,
             isFirstTier: true,
           },
@@ -633,7 +633,7 @@ function App() {
 
           const contribution =
             rule.isFirstTier
-              ? playgroundTier1Base * (quantity / playgroundTier1Limit)
+              ? (quantity > 0 ? playgroundTier1Base : 0)
               : quantity * rule.rate
 
           const formulaText = rule.isFirstTier
@@ -1023,10 +1023,10 @@ function App() {
                 <p>Phí bản quyền năm (theo NĐ 17/2023)</p>
                 <div className="fee-hero-sub">
                   <span>Số tiền: {formatVnd(feeResult.baseAmount)}</span>
-                  <span>Khu vực áp: {feeResult.region.label}</span>
+                  <span>Khu vực ápp dụng: {feeResult.region.label}</span>
                   <span>Phí bản quyền trc thuế: {formatVnd(feeResult.annualFee)}</span>
                   <span>Thuế (GTGT 8%): {formatVnd(feeResult.vat)}</span>
-                  <span className="fee-total-final">tổng số tiền: {formatVnd(feeResult.totalWithVat)}</span>
+                  <span className="fee-total-final">Tổng số tiền: {formatVnd(feeResult.totalWithVat)}</span>
                 </div>
               </div>
 
