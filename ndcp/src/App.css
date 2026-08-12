@@ -4,7 +4,18 @@
   gap: 14px;
   font-size: 0.96rem;
 }
+.app-logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px; /* Khoảng cách giữa Logo và Bảng bên dưới */
+}
 
+.app-logo {
+  max-width: 200px; /* Bạn có thể điều chỉnh kích thước lớn/nhỏ tùy ý */
+  height: auto;
+  object-fit: contain;
+}
 .hero-card,
 .section-card {
   border: 1px solid rgba(65, 105, 200, 0.22);

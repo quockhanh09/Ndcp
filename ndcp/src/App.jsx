@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import logo from './assets/Appa-cmc-nen-toi.png' // Import logo từ thư mục assets
 import { cities, getWardsByCity, getActiveRegion } from './data/vietnamLocations'
 
 function DocumentIcon() {
@@ -124,39 +125,6 @@ const businessTypes = [
   { id: 'hotel', label: 'Khách sạn', icon: HotelIcon },
 ]
 
-const parameterCards = [
-  {
-    title: 'T1',
-    body: 'Ngưỡng diện tích hoặc số phòng bậc 1. Từ 0 đến T1 áp dụng hệ số cơ bản.',
-    tone: 'blue',
-  },
-  {
-    title: 'T2',
-    body: 'Ngưỡng bậc 2. Phần vượt T1 đến T2 áp dụng hệ số cộng thêm.',
-    tone: 'indigo',
-  },
-  {
-    title: 'A_BASE',
-    body: 'Hệ số khởi điểm của ngành. Dùng làm nền cho bậc 1 trước khi cộng dồn.',
-    tone: 'slate',
-  },
-  {
-    title: 'R2 / R3',
-    body: 'Hệ số cộng thêm ở bậc 2 và bậc 3. Phần diện tích lớn sẽ tăng nhanh hơn.',
-    tone: 'violet',
-  },
-  {
-    title: 'CAP',
-    body: 'Trần tối đa của ngành. Dù diện tích rất lớn, phí vẫn không vượt quá mức này.',
-    tone: 'amber',
-  },
-  {
-    title: 'B',
-    body: 'Mức lương cơ sở dùng để quy đổi ra tiền. Có thể cập nhật khi chính sách thay đổi.',
-    tone: 'emerald',
-  },
-]
-
 const baseSalary = 2_530_000
 const vatRate = 0.08
 const cafeCap = 8
@@ -189,9 +157,9 @@ const supermarketTier1Limit = 500
 const supermarketTier2Limit = 1000
 
 const tierRules = [
-  { label: 'Bậc 1', range: '0 - 15 m²', min: 0, max: 15, rate: 0.0233 },
-  { label: 'Bậc 2', range: '15 - 50 m²', min: 15, max: 50, rate: 0.04 },
-  { label: 'Bậc 3', range: '> 50 m²', min: 50, max: Number.POSITIVE_INFINITY, rate: 0.02 },
+  { label: 'Bậc 1', range: '0 - 15 m²', min: 0, max: 15, rate: 0.0233, rateText: '0,35 / 15' },
+  { label: 'Bậc 2', range: '15 - 50 m²', min: 15, max: 50, rate: 0.04, rateText: '0,04' },
+  { label: 'Bậc 3', range: '> 50 m²', min: 50, max: Number.POSITIVE_INFINITY, rate: 0.02, rateText: '0,02' },
 ]
 
 const karaokeRoomRules = [
@@ -237,25 +205,8 @@ const hotelRules = [
   },
 ]
 
-const fullParameterRows = [
-  { type: 'Quán café', unit: 'm²', t1: '15', t2: '50', aBase: '0,35', r2: '0,04', r3: '0,02', cap: '8' },
-  { type: 'Nhà hàng, phòng hội thảo, hội nghị', unit: 'm²', t1: '50', t2: '100', aBase: '2,0', r2: '0,05', r3: '0,03', cap: '8' },
-  { type: 'Cửa hàng, showroom', unit: 'm²', t1: '50', t2: '100', aBase: '0,35', r2: '0,008', r3: '0,006', cap: '5' },
-  { type: 'CLB thể dục, SPA', unit: 'm²', t1: '50', t2: '100', aBase: '0,50', r2: '0,011', r3: '0,009', cap: '10' },
-  { type: 'Quán bar', unit: 'm²', t1: '50', t2: '200', aBase: '2,35', r2: '0,06', r3: '0,05', cap: '27' },
-  { type: 'Khu vui chơi', unit: 'm²', t1: '200', t2: '500', aBase: '0,70', r2: '0,003', r3: '0,001', cap: '12' },
-  { type: 'Trung tâm TM', unit: 'm²', t1: '200', t2: '500', aBase: '1,50*', r2: '0,003', r3: '0,002', cap: '50' },
-  { type: 'Siêu thị', unit: 'm²', t1: '500', t2: '1000', aBase: '1,25*', r2: '0,003', r3: '0,002', cap: '10' },
-  { type: 'Karaoke ≤20m²/phòng', unit: 'phòng', t1: '4', t2: '10', aBase: '1,50', r2: '1,20', r3: '1,05', cap: '—' },
-  { type: 'Karaoke 20-30m²/phòng', unit: 'phòng', t1: '4', t2: '10', aBase: '1,60', r2: '1,28', r3: '1,12', cap: '—' },
-  { type: 'Karaoke >30m²/phòng', unit: 'phòng', t1: '4', t2: '10', aBase: '1,70', r2: '1,36', r3: '1,19', cap: '—' },
-  { type: 'Box VIP (cố định)', unit: 'phòng', t1: '—', t2: '—', aBase: '0,85', r2: '—', r3: '—', cap: '—' },
-  { type: 'Khách sạn 4 - 5 sao (hoặc tương đương)', unit: 'phòng', t1: '—', t2: '—', aBase: '0,03', r2: '—', r3: '—', cap: '—' },
-  { type: 'Khách sạn 1 - 3 sao (hoặc tương đương)', unit: 'phòng', t1: '—', t2: '—', aBase: '0,02', r2: '—', r3: '—', cap: '—' },
-]
-
 const formatVnd = (value) => `${new Intl.NumberFormat('vi-VN').format(Math.round(value))} ₫`
-const formatNumber = (value, fractionDigits = 2) =>
+const formatNumber = (value, fractionDigits = 4) =>
   new Intl.NumberFormat('vi-VN', {
     minimumFractionDigits: 0,
     maximumFractionDigits: fractionDigits,
@@ -326,7 +277,8 @@ function App() {
             label: `${rule.label} - Từ 1 đến 4 phòng`,
             range: 'Bậc phòng 1-4',
             quantity: tier1Qty,
-            rate: rule.coefficients[0],
+            rateText: formatNumber(rule.coefficients[0], 2),
+            formulaText: `${tier1Qty} x ${formatNumber(rule.coefficients[0], 2)} x ${formatNumber(baseSalary, 0)}`,
             contribution: tier1Qty * rule.coefficients[0],
             unit: 'phòng',
           },
@@ -334,7 +286,8 @@ function App() {
             label: `${rule.label} - Từ phòng 5 đến 10`,
             range: 'Bậc phòng 5-10',
             quantity: tier2Qty,
-            rate: rule.coefficients[1],
+            rateText: formatNumber(rule.coefficients[1], 2),
+            formulaText: `${tier2Qty} x ${formatNumber(rule.coefficients[1], 2)} x ${formatNumber(baseSalary, 0)}`,
             contribution: tier2Qty * rule.coefficients[1],
             unit: 'phòng',
           },
@@ -342,7 +295,8 @@ function App() {
             label: `${rule.label} - Từ phòng 11 trở đi`,
             range: 'Bậc phòng 11+',
             quantity: tier3Qty,
-            rate: rule.coefficients[2],
+            rateText: formatNumber(rule.coefficients[2], 2),
+            formulaText: `${tier3Qty} x ${formatNumber(rule.coefficients[2], 2)} x ${formatNumber(baseSalary, 0)}`,
             contribution: tier3Qty * rule.coefficients[2],
             unit: 'phòng',
           },
@@ -356,7 +310,8 @@ function App() {
         label: karaokeBoxRule.label,
         range: 'Cố định theo số box',
         quantity: boxQuantity,
-        rate: karaokeBoxRule.fixed,
+        rateText: formatNumber(karaokeBoxRule.fixed, 2),
+        formulaText: `${boxQuantity} x ${formatNumber(karaokeBoxRule.fixed, 2)} x ${formatNumber(baseSalary, 0)}`,
         contribution: boxQuantity * karaokeBoxRule.fixed,
         unit: 'box',
       })
@@ -375,7 +330,8 @@ function App() {
           label: rule.label,
           range: 'Theo số lượng',
           quantity,
-          rate: rule.rate,
+          rateText: formatNumber(rule.rate, 2),
+          formulaText: `${quantity} x ${formatNumber(rule.rate, 2)} x ${formatNumber(baseSalary, 0)}`,
           contribution,
           unit: 'phòng',
         }
@@ -398,6 +354,8 @@ function App() {
             min: 0,
             max: 15,
             rate: cafeTier1Base / cafeTier1Limit,
+            baseCoeff: cafeTier1Base,
+            isFirstTier: true,
           },
           {
             label: 'Bậc 2',
@@ -405,6 +363,7 @@ function App() {
             min: 15,
             max: 50,
             rate: 0.04,
+            rateText: '0,04',
           },
           {
             label: 'Bậc 3',
@@ -412,19 +371,25 @@ function App() {
             min: 50,
             max: Number.POSITIVE_INFINITY,
             rate: 0.02,
+            rateText: '0,02',
           },
         ].map((rule) => {
           const quantity = calculateTierQuantity(safeArea, rule.min, rule.max)
 
           const contribution =
-            rule.label === 'Bậc 1'
+            rule.isFirstTier
               ? cafeTier1Base * (quantity / cafeTier1Limit)
               : quantity * rule.rate
+
+          const formulaText = rule.isFirstTier
+            ? `${formatNumber(cafeTier1Base, 2)} x ${formatNumber(baseSalary, 0)}`
+            : `${formatNumber(quantity, 0)} x ${rule.rateText || formatNumber(rule.rate, 4)} x ${formatNumber(baseSalary, 0)}`
 
           return {
             ...rule,
             quantity,
             contribution,
+            formulaText,
             unit: 'm²',
           }
         })
@@ -440,6 +405,8 @@ function App() {
             min: 0,
             max: 50,
             rate: restaurantTier1Base / restaurantTier1Limit,
+            baseCoeff: restaurantTier1Base,
+            isFirstTier: true,
           },
           {
             label: 'Bậc 2',
@@ -447,6 +414,7 @@ function App() {
             min: 50,
             max: 100,
             rate: 0.05,
+            rateText: '0,05',
           },
           {
             label: 'Bậc 3',
@@ -454,19 +422,25 @@ function App() {
             min: 100,
             max: Number.POSITIVE_INFINITY,
             rate: 0.03,
+            rateText: '0,03',
           },
         ].map((rule) => {
           const quantity = calculateTierQuantity(safeArea, rule.min, rule.max)
 
           const contribution =
-            rule.label === 'Bậc 1'
+            rule.isFirstTier
               ? restaurantTier1Base * (quantity / restaurantTier1Limit)
               : quantity * rule.rate
+
+          const formulaText = rule.isFirstTier
+            ? `${formatNumber(restaurantTier1Base, 2)} x ${formatNumber(baseSalary, 0)}`
+            : `${formatNumber(quantity, 0)} x ${rule.rateText || formatNumber(rule.rate, 4)} x ${formatNumber(baseSalary, 0)}`
 
           return {
             ...rule,
             quantity,
             contribution,
+            formulaText,
             unit: 'm²',
           }
         })
@@ -482,6 +456,8 @@ function App() {
             min: 0,
             max: 50,
             rate: shopTier1Base / shopTier1Limit,
+            baseCoeff: shopTier1Base,
+            isFirstTier: true,
           },
           {
             label: 'Bậc 2',
@@ -489,6 +465,7 @@ function App() {
             min: 50,
             max: 100,
             rate: 0.008,
+            rateText: '0,008',
           },
           {
             label: 'Bậc 3',
@@ -496,19 +473,25 @@ function App() {
             min: 100,
             max: Number.POSITIVE_INFINITY,
             rate: 0.006,
+            rateText: '0,006',
           },
         ].map((rule) => {
           const quantity = calculateTierQuantity(safeArea, rule.min, rule.max)
 
           const contribution =
-            rule.label === 'Bậc 1'
+            rule.isFirstTier
               ? shopTier1Base * (quantity / shopTier1Limit)
               : quantity * rule.rate
+
+          const formulaText = rule.isFirstTier
+            ? `${formatNumber(shopTier1Base, 2)} x ${formatNumber(baseSalary, 0)}`
+            : `${formatNumber(quantity, 0)} x ${rule.rateText || formatNumber(rule.rate, 4)} x ${formatNumber(baseSalary, 0)}`
 
           return {
             ...rule,
             quantity,
             contribution,
+            formulaText,
             unit: 'm²',
           }
         })
@@ -524,6 +507,8 @@ function App() {
             min: 0,
             max: 50,
             rate: fitnessTier1Base / fitnessTier1Limit,
+            baseCoeff: fitnessTier1Base,
+            isFirstTier: true,
           },
           {
             label: 'Bậc 2',
@@ -531,6 +516,7 @@ function App() {
             min: 50,
             max: 100,
             rate: 0.011,
+            rateText: '0,011',
           },
           {
             label: 'Bậc 3',
@@ -538,19 +524,25 @@ function App() {
             min: 100,
             max: Number.POSITIVE_INFINITY,
             rate: 0.009,
+            rateText: '0,009',
           },
         ].map((rule) => {
           const quantity = calculateTierQuantity(safeArea, rule.min, rule.max)
 
           const contribution =
-            rule.label === 'Bậc 1'
+            rule.isFirstTier
               ? fitnessTier1Base * (quantity / fitnessTier1Limit)
               : quantity * rule.rate
+
+          const formulaText = rule.isFirstTier
+            ? `${formatNumber(fitnessTier1Base, 2)} x ${formatNumber(baseSalary, 0)}`
+            : `${formatNumber(quantity, 0)} x ${rule.rateText || formatNumber(rule.rate, 4)} x ${formatNumber(baseSalary, 0)}`
 
           return {
             ...rule,
             quantity,
             contribution,
+            formulaText,
             unit: 'm²',
           }
         })
@@ -566,6 +558,8 @@ function App() {
             min: 0,
             max: barTier1Limit,
             rate: barTier1Base / barTier1Limit,
+            baseCoeff: barTier1Base,
+            isFirstTier: true,
           },
           {
             label: 'Bậc 2',
@@ -573,6 +567,7 @@ function App() {
             min: barTier1Limit,
             max: barTier2Limit,
             rate: 0.06,
+            rateText: '0,06',
           },
           {
             label: 'Bậc 3',
@@ -580,19 +575,25 @@ function App() {
             min: barTier2Limit,
             max: Number.POSITIVE_INFINITY,
             rate: 0.05,
+            rateText: '0,05',
           },
         ].map((rule) => {
           const quantity = calculateTierQuantity(safeArea, rule.min, rule.max)
 
           const contribution =
-            rule.label === 'Bậc 1'
+            rule.isFirstTier
               ? barTier1Base * (quantity / barTier1Limit)
               : quantity * rule.rate
+
+          const formulaText = rule.isFirstTier
+            ? `${formatNumber(barTier1Base, 2)} x ${formatNumber(baseSalary, 0)}`
+            : `${formatNumber(quantity, 0)} x ${rule.rateText || formatNumber(rule.rate, 4)} x ${formatNumber(baseSalary, 0)}`
 
           return {
             ...rule,
             quantity,
             contribution,
+            formulaText,
             unit: 'm²',
           }
         })
@@ -608,6 +609,8 @@ function App() {
             min: 0,
             max: playgroundTier1Limit,
             rate: playgroundTier1Base / playgroundTier1Limit,
+            baseCoeff: playgroundTier1Base,
+            isFirstTier: true,
           },
           {
             label: 'Bậc 2',
@@ -615,6 +618,7 @@ function App() {
             min: playgroundTier1Limit,
             max: playgroundTier2Limit,
             rate: 0.003,
+            rateText: '0,003',
           },
           {
             label: 'Bậc 3',
@@ -622,19 +626,25 @@ function App() {
             min: playgroundTier2Limit,
             max: Number.POSITIVE_INFINITY,
             rate: 0.001,
+            rateText: '0,001',
           },
         ].map((rule) => {
           const quantity = calculateTierQuantity(safeArea, rule.min, rule.max)
 
           const contribution =
-            rule.label === 'Bậc 1'
+            rule.isFirstTier
               ? playgroundTier1Base * (quantity / playgroundTier1Limit)
               : quantity * rule.rate
+
+          const formulaText = rule.isFirstTier
+            ? `${formatNumber(playgroundTier1Base, 2)} x ${formatNumber(baseSalary, 0)}`
+            : `${formatNumber(quantity, 0)} x ${rule.rateText || formatNumber(rule.rate, 4)} x ${formatNumber(baseSalary, 0)}`
 
           return {
             ...rule,
             quantity,
             contribution,
+            formulaText,
             unit: 'm²',
           }
         })
@@ -650,6 +660,8 @@ function App() {
             min: 0,
             max: mallTier1Limit,
             rate: mallTier1Base,
+            baseCoeff: mallTier1Base,
+            isFirstTier: true,
           },
           {
             label: 'Bậc 2',
@@ -657,6 +669,7 @@ function App() {
             min: mallTier1Limit,
             max: mallTier2Limit,
             rate: 0.003,
+            rateText: '0,003',
           },
           {
             label: 'Bậc 3',
@@ -664,21 +677,27 @@ function App() {
             min: mallTier2Limit,
             max: Number.POSITIVE_INFINITY,
             rate: 0.002,
+            rateText: '0,002',
           },
         ].map((rule) => {
           const quantity = calculateTierQuantity(safeArea, rule.min, rule.max)
 
           const contribution =
-            rule.label === 'Bậc 1'
+            rule.isFirstTier
               ? quantity > 0
                 ? mallTier1Base
                 : 0
               : quantity * rule.rate
 
+          const formulaText = rule.isFirstTier
+            ? `${formatNumber(mallTier1Base, 2)} x ${formatNumber(baseSalary, 0)}`
+            : `${formatNumber(quantity, 0)} x ${rule.rateText || formatNumber(rule.rate, 4)} x ${formatNumber(baseSalary, 0)}`
+
           return {
             ...rule,
             quantity,
             contribution,
+            formulaText,
             unit: 'm²',
           }
         })
@@ -694,6 +713,8 @@ function App() {
             min: 0,
             max: supermarketTier1Limit,
             rate: supermarketTier1Base,
+            baseCoeff: supermarketTier1Base,
+            isFirstTier: true,
           },
           {
             label: 'Bậc 2',
@@ -701,6 +722,7 @@ function App() {
             min: supermarketTier1Limit,
             max: supermarketTier2Limit,
             rate: 0.003,
+            rateText: '0,003',
           },
           {
             label: 'Bậc 3',
@@ -708,21 +730,27 @@ function App() {
             min: supermarketTier2Limit,
             max: Number.POSITIVE_INFINITY,
             rate: 0.002,
+            rateText: '0,002',
           },
         ].map((rule) => {
           const quantity = calculateTierQuantity(safeArea, rule.min, rule.max)
 
           const contribution =
-            rule.label === 'Bậc 1'
+            rule.isFirstTier
               ? quantity > 0
                 ? supermarketTier1Base
                 : 0
               : quantity * rule.rate
 
+          const formulaText = rule.isFirstTier
+            ? `${formatNumber(supermarketTier1Base, 2)} x ${formatNumber(baseSalary, 0)}`
+            : `${formatNumber(quantity, 0)} x ${rule.rateText || formatNumber(rule.rate, 4)} x ${formatNumber(baseSalary, 0)}`
+
           return {
             ...rule,
             quantity,
             contribution,
+            formulaText,
             unit: 'm²',
           }
         })
@@ -739,6 +767,7 @@ function App() {
             ...rule,
             quantity,
             contribution,
+            formulaText: `${formatNumber(quantity, 0)} x ${rule.rateText || formatNumber(rule.rate, 4)} x ${formatNumber(baseSalary, 0)}`,
             unit: 'm²',
           }
         })
@@ -753,6 +782,7 @@ function App() {
       return
     }
 
+    const baseAmount = totalA * baseSalary
     const vat = annualFee * vatRate
     const totalWithVat = annualFee + vat
 
@@ -760,6 +790,7 @@ function App() {
       safeArea,
       rows,
       totalA,
+      baseAmount,
       annualFee,
       vat,
       totalWithVat,
@@ -780,17 +811,21 @@ function App() {
 
   return (
     <main className="page-shell">
+      {/* Khối hiển thị Logo */}
+      <div className="app-logo-wrapper">
+        <img src={logo} alt="Logo" className="app-logo" />
+      </div>
+
       <section className="hero-card">
         <div className="hero-icon" aria-hidden="true">
           <DocumentIcon />
         </div>
         <div className="hero-copy">
           <h1>Biểu phí theo Nghị định 17/2023/NĐ-CP</h1>
-          <p> 
-             Mức lương cơ sở : 2.530.000
-              </p>
+          <p>
+            Mức lương cơ sở : 2.530.000
+          </p>
           <div className="hero-math">
-            
             <span>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Hệ số điều chỉnh</span>
           </div>
         </div>
@@ -950,10 +985,10 @@ function App() {
                     />
                   </label>
                 ))}
-                  <p className="karaoke-hint">
-                    Dịch vụ khác trong khách sạn (nhà hàng, bar, karaoke, hồ bơi, gym, massage, spa, lobby, bãi xe,
-                    khu mua sắm, vui chơi...) áp dụng theo nhóm loại hình tương ứng.
-                  </p>
+                <p className="karaoke-hint">
+                  Dịch vụ khác trong khách sạn (nhà hàng, bar, karaoke, hồ bơi, gym, massage, spa, lobby, bãi xe,
+                  khu mua sắm, vui chơi...) áp dụng theo nhóm loại hình tương ứng.
+                </p>
               </div>
             ) : (
               <label className="field">
@@ -987,9 +1022,11 @@ function App() {
               <div className="fee-hero">
                 <p>Phí bản quyền năm (theo NĐ 17/2023)</p>
                 <div className="fee-hero-sub">
-                  <span>Số tiền: {formatVnd(feeResult.annualFee)}</span>
-                  <span>Thuế GTGT 8%: {formatVnd(feeResult.vat)}</span>
-                  <span className="fee-total-final">Tổng cần thanh toán: {formatVnd(feeResult.totalWithVat)}</span>
+                  <span>Số tiền: {formatVnd(feeResult.baseAmount)}</span>
+                  <span>Khu vực áp: {feeResult.region.label}</span>
+                  <span>Phí bản quyền trc thuế: {formatVnd(feeResult.annualFee)}</span>
+                  <span>Thuế (GTGT 8%): {formatVnd(feeResult.vat)}</span>
+                  <span className="fee-total-final">tổng số tiền: {formatVnd(feeResult.totalWithVat)}</span>
                 </div>
               </div>
 
@@ -1001,26 +1038,24 @@ function App() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Khoảng diện tích</th>
-                      <th>Diện tích</th>
-                      <th>Thành tiền</th>
-                      <th>Hệ số/m²</th>
-                      <th>Tổng</th>
+                      <th>KHOẢNG DIỆN TÍCH</th>
+                      <th>DIỆN TÍCH</th>
+                      <th>THÀNH TIỀN</th>
+                      <th>TỔNG</th>
                     </tr>
                   </thead>
                   <tbody>
                     {feeResult.rows.map((row) => (
                       <tr key={row.label}>
                         <td><strong>{row.range}</strong></td>
-                        <td>{formatNumber(row.quantity)} {row.unit}</td>
-                        <td>{formatNumber(row.quantity)} x {formatNumber(row.rate, 2)} x {formatNumber(baseSalary, 0)}</td>
-                        <td>{formatNumber(row.rate, 2)} / {row.unit}</td>
-                        <td><strong>{formatNumber(row.contribution)}</strong></td>
+                        <td>{formatNumber(row.quantity, 0)} {row.unit}</td>
+                        <td>{row.formulaText}</td>
+                        <td><strong>{formatVnd(row.contribution * baseSalary * feeResult.region.multiplier)}</strong></td>
                       </tr>
                     ))}
                     <tr className="total-row">
-                      <td colSpan={4}>Tổng A</td>
-                      <td><strong>{formatNumber(feeResult.totalA)}</strong></td>
+                      <td colSpan={3}>Tổng tiền (chưa VAT)</td>
+                      <td><strong>{formatVnd(feeResult.annualFee)}</strong></td>
                     </tr>
                   </tbody>
                 </table>
