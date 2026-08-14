@@ -113,16 +113,16 @@ function HotelIcon() {
 }
 
 const businessTypes = [
-  { id: 'cafe', label: 'Quán café', icon: CafeIcon },
-  { id: 'restaurant', label: 'Nhà hàng, phòng hội thảo, hội nghị', icon: DiningIcon },
-  { id: 'shop', label: 'Cửa hàng, showroom', icon: ShopIcon },
-  { id: 'spa', label: 'CLB thể dục, SPA', icon: FitnessIcon },
-  { id: 'bar', label: 'Quán bar', icon: BarIcon },
-  { id: 'playground', label: 'Khu vui chơi', icon: PlayIcon },
-  { id: 'mall', label: 'Trung tâm thương mại', icon: MallIcon },
-  { id: 'supermarket', label: 'Siêu thị', icon: CartIcon },
-  { id: 'karaoke', label: 'Karaoke', icon: KaraokeIcon },
-  { id: 'hotel', label: 'Khách sạn', icon: HotelIcon },
+  { id: 'cafe', label: 'Quán café', icon: CafeIcon, capMultiplier: 8 },
+  { id: 'restaurant', label: 'Nhà hàng, phòng hội thảo, hội nghị', icon: DiningIcon, capMultiplier: 8 },
+  { id: 'shop', label: 'Cửa hàng, showroom', icon: ShopIcon, capMultiplier: 5 },
+  { id: 'spa', label: 'CLB thể dục, SPA', icon: FitnessIcon, capMultiplier: 10 },
+  { id: 'bar', label: 'Quán bar', icon: BarIcon, capMultiplier: 27 },
+  { id: 'playground', label: 'Khu vui chơi', icon: PlayIcon, capMultiplier: 12 },
+  { id: 'mall', label: 'Trung tâm thương mại', icon: MallIcon, capMultiplier: 50 },
+  { id: 'supermarket', label: 'Siêu thị', icon: CartIcon, capMultiplier: 10 },
+  { id: 'karaoke', label: 'Karaoke', icon: KaraokeIcon, capMultiplier: null },
+  { id: 'hotel', label: 'Khách sạn', icon: HotelIcon, capMultiplier: null },
 ]
 
 const baseSalary = 2_530_000
@@ -254,6 +254,8 @@ function App() {
   const isPlayground = selectedType === 'playground'
   const isMall = selectedType === 'mall'
   const isSupermarket = selectedType === 'supermarket'
+
+  const currentBusinessType = businessTypes.find((b) => b.id === selectedType)
 
   const handleCalculate = () => {
     let rows = []
@@ -796,6 +798,7 @@ function App() {
       totalWithVat,
       region: activeRegion,
       rawTotalA,
+      capMultiplier: currentBusinessType?.capMultiplier || null,
       isCafe,
       isRestaurant,
       isShop,
@@ -1023,7 +1026,7 @@ function App() {
                 <p>Phí bản quyền năm (theo NĐ 17/2023)</p>
                 <div className="fee-hero-sub">
                   <span>Số tiền: {formatVnd(feeResult.baseAmount)}</span>
-                  <span>Khu vực ápp dụng: {feeResult.region.label}</span>
+                  <span>Khu vực áp dụng: {feeResult.region.label}</span>
                   <span>Phí bản quyền trc thuế: {formatVnd(feeResult.annualFee)}</span>
                   <span>Thuế (GTGT 8%): {formatVnd(feeResult.vat)}</span>
                   <span className="fee-total-final">Tổng số tiền: {formatVnd(feeResult.totalWithVat)}</span>
@@ -1031,7 +1034,26 @@ function App() {
               </div>
 
               <div className="fee-detail-card">
-                <h4>Chi tiết tính phí</h4>
+                {feeResult.capMultiplier ? (
+                  <>
+                    <h4>
+                      Chi tiết tính phí (Số tiền bản quyền tối đa trong một năm là:{' '}
+                      {feeResult.capMultiplier} x {formatNumber(baseSalary, 0)} ={' '}
+                      <span style={{ color: '#ffea00' }}>
+                        {formatVnd(feeResult.capMultiplier * baseSalary)}
+                      </span>
+                      )
+                    </h4>
+                    
+                    {feeResult.rawTotalA >= feeResult.capMultiplier && (
+                      <p style={{ marginTop: '4px', fontSize: '13px', color: '#ff6b6b', fontWeight: 'bold' }}>
+                        ⚠️ Diện tích lớn đã chạm/vượt mức bản quyền tối đa trong 1 năm! Phí được tính theo trần tối đa ({feeResult.capMultiplier} x Mức lương cơ sở).
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <h4>Chi tiết tính phí bản quyền</h4>
+                )}
               </div>
 
               <div className="fee-table-card">
