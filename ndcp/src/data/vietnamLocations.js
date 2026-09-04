@@ -45,7 +45,6 @@ export const cities = [
 
   // --- ĐÔ THỊ LOẠI III ---
   { id: 'tuyenquang', name: 'Tuyên Quang', urbanClassId: 'grade3' }, //
-  
   { id: 'caobang', name: 'Cao Bằng', urbanClassId: 'grade3' }, //
   { id: 'langson', name: 'Lạng Sơn', urbanClassId: 'grade3' }, //
   { id: 'dienbien', name: 'Điện Biên', urbanClassId: 'grade3' }, //
