@@ -9,53 +9,49 @@ export const urbanClasses = [
 
 export const cities = [
   // --- ĐÔ THỊ ĐẶC BIỆT ---
-  { id: 'hanoi', name: 'Hà Nội', urbanClassId: 'special' },
-  { id: 'hcmc', name: 'TP. Hồ Chí Minh', urbanClassId: 'special' },
+  { id: 'hanoi', name: 'Hà Nội', urbanClassId: 'special' }, //
+  { id: 'hcmc', name: 'TP. Hồ Chí Minh', urbanClassId: 'special' }, //
 
   // --- ĐÔ THỊ LOẠI I ---
-  { id: 'haiphong', name: 'Hải Phòng', urbanClassId: 'grade1' },
-  { id: 'danang', name: 'Đà Nẵng', urbanClassId: 'grade1' },
-  { id: 'cantho', name: 'Cần Thơ', urbanClassId: 'grade1' },
-  { id: 'hue', name: 'Thừa Thiên Huế', urbanClassId: 'grade1' },
-  { id: 'thainguyen', name: 'Thái Nguyên', urbanClassId: 'grade1' },
-  { id: 'khanhhoa', name: 'Khánh Hòa', urbanClassId: 'grade1' },
-  { id: 'daklak', name: 'Đắk Lắk', urbanClassId: 'grade1' },
-  { id: 'lamdong', name: 'Lâm Đồng', urbanClassId: 'grade1' },
-
-
-
+  { id: 'haiphong', name: 'Hải Phòng', urbanClassId: 'grade1' }, //
+  { id: 'danang', name: 'Đà Nẵng', urbanClassId: 'grade1' }, //
+  { id: 'cantho', name: 'Cần Thơ', urbanClassId: 'grade1' }, //
+  { id: 'hue', name: 'Thừa Thiên Huế', urbanClassId: 'grade1' }, //
+  { id: 'thainguyen', name: 'Thái Nguyên', urbanClassId: 'grade1' }, //
+  { id: 'khanhhoa', name: 'Khánh Hòa', urbanClassId: 'grade1' }, //
+  { id: 'daklak', name: 'Đắk Lắk', urbanClassId: 'grade1' }, //
+  { id: 'lamdong', name: 'Lâm Đồng', urbanClassId: 'grade1' }, //
+  { id: 'dongnai', name: 'Đồng Nai', urbanClassId: 'grade1' }, //
   // --- ĐÔ THỊ LOẠI II ---
-  { id: 'quangninh', name: 'Quảng Ninh', urbanClassId: 'grade2' },
-  { id: 'bacninh', name: 'Bắc Ninh', urbanClassId: 'grade2' },
-  { id: 'phutho', name: 'Phú Thọ', urbanClassId: 'grade2' },
-  { id: 'laocai', name: 'Lào Cai', urbanClassId: 'grade2' },
-  { id: 'ninhbinh', name: 'Ninh Bình', urbanClassId: 'grade2' },
-  { id: 'thanhhoa', name: 'Thanh Hóa', urbanClassId: 'grade2' },
-  { id: 'nghean', name: 'Nghệ An', urbanClassId: 'grade2' },
-  { id: 'hatinh', name: 'Hà Tĩnh', urbanClassId: 'grade2' },
-  { id: 'quangtri', name: 'Quảng Trị', urbanClassId: 'grade2' },
-  { id: 'quangngai', name: 'Quảng Ngãi', urbanClassId: 'grade2' },
-  { id: 'gialai', name: 'Gia Lai', urbanClassId: 'grade2' },
+  { id: 'quangninh', name: 'Quảng Ninh', urbanClassId: 'grade2' }, //
+  { id: 'bacninh', name: 'Bắc Ninh', urbanClassId: 'grade2' }, //
+  { id: 'phutho', name: 'Phú Thọ', urbanClassId: 'grade2' }, //
+  { id: 'laocai', name: 'Lào Cai', urbanClassId: 'grade2' }, //
+  { id: 'ninhbinh', name: 'Ninh Bình', urbanClassId: 'grade2' }, //
+  { id: 'thanhhoa', name: 'Thanh Hóa', urbanClassId: 'grade2' }, //
+  { id: 'nghean', name: 'Nghệ An', urbanClassId: 'grade2' }, //
+  { id: 'hatinh', name: 'Hà Tĩnh', urbanClassId: 'grade2' }, //
+  { id: 'quangtri', name: 'Quảng Trị', urbanClassId: 'grade2' }, //
+  { id: 'quangngai', name: 'Quảng Ngãi', urbanClassId: 'grade2' }, //
+  { id: 'gialai', name: 'Gia Lai', urbanClassId: 'grade2' }, //
   { id: 'phuyen', name: 'Phú Yên', urbanClassId: 'grade2' },
-  { id: 'tayninh', name: 'Tây Ninh', urbanClassId: 'grade2' },
+  { id: 'tayninh', name: 'Tây Ninh', urbanClassId: 'grade2' }, //
   { id: 'longan', name: 'Long An', urbanClassId: 'grade2' },
-  { id: 'dongthap', name: 'Đồng Tháp', urbanClassId: 'grade2' },
-  { id: 'vinhlong', name: 'Vĩnh Long', urbanClassId: 'grade2' },
-  { id: 'bentre', name: 'Bến Tre', urbanClassId: 'grade2' },
-  { id: 'travinh', name: 'Trà Vinh', urbanClassId: 'grade2' },
-  { id: 'angiang', name: 'An Giang', urbanClassId: 'grade2' },
-  { id: 'camau', name: 'Cà Mau', urbanClassId: 'grade2' },
-  { id: 'baclieu', name: 'Bạc Liêu', urbanClassId: 'grade2' },
+  { id: 'dongthap', name: 'Đồng Tháp', urbanClassId: 'grade2' }, //
+  { id: 'vinhlong', name: 'Vĩnh Long', urbanClassId: 'grade2' }, //
+  { id: 'angiang', name: 'An Giang', urbanClassId: 'grade2' }, //
+  { id: 'camau', name: 'Cà Mau', urbanClassId: 'grade2' }, //
+  
 
   // --- ĐÔ THỊ LOẠI III ---
-  { id: 'tuyenquang', name: 'Tuyên Quang', urbanClassId: 'grade3' },
+  { id: 'tuyenquang', name: 'Tuyên Quang', urbanClassId: 'grade3' }, //
   
-  { id: 'caobang', name: 'Cao Bằng', urbanClassId: 'grade3' },
-  { id: 'langson', name: 'Lạng Sơn', urbanClassId: 'grade3' },
-  { id: 'dienbien', name: 'Điện Biên', urbanClassId: 'grade3' },
-  { id: 'laichau', name: 'Lai Châu', urbanClassId: 'grade3' },
-  { id: 'sonla', name: 'Sơn La', urbanClassId: 'grade3' },
-  { id: 'hungyen', name: 'Hưng Yên', urbanClassId: 'grade3' },
+  { id: 'caobang', name: 'Cao Bằng', urbanClassId: 'grade3' }, //
+  { id: 'langson', name: 'Lạng Sơn', urbanClassId: 'grade3' }, //
+  { id: 'dienbien', name: 'Điện Biên', urbanClassId: 'grade3' }, //
+  { id: 'laichau', name: 'Lai Châu', urbanClassId: 'grade3' }, //
+  { id: 'sonla', name: 'Sơn La', urbanClassId: 'grade3' }, //
+  { id: 'hungyen', name: 'Hưng Yên', urbanClassId: 'grade3' },//
 ]
 
 export const wards = [
