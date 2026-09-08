@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root {
   --text: #dce8f8;
   --muted: #3d5470;
@@ -7,8 +9,8 @@
   --glass-bg: rgba(9, 18, 44, 0.7);
   --glass-border: rgba(65, 105, 200, 0.22);
   --glass-highlight: inset 0 1px 0 rgba(100, 160, 255, 0.08);
-  --heading: 'Georgia', 'Times New Roman', serif;
-  --body: 'Trebuchet MS', 'Segoe UI', sans-serif;
+  --heading: 'Inter', 'Segoe UI', sans-serif;
+  --body: 'Inter', 'Segoe UI', sans-serif;
   --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 
   font: 16px/1.46 var(--body);
@@ -38,6 +40,8 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-weight: 400;
 }
 
 button,
