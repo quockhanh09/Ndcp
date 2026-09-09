@@ -11,6 +11,48 @@ function DocumentIcon() {
   )
 }
 
+const businessTypeAbbreviations = {
+  cafe: 'CF',
+  restaurant: 'NH',
+  shop: 'CH',
+  spa: 'SPA',
+  bar: 'BAR',
+  playground: 'KVC',
+  mall: 'TTTM',
+  supermarket: 'ST',
+  hotel: 'KS',
+}
+
+const karaokeSubTypeAbbreviations = {
+  room: 'KRP',
+  box: 'KRB',
+}
+
+function formatRegistrationTime(date) {
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = date.getFullYear()
+  return `${hours}:${minutes} ${day}-${month}-${year}`
+}
+
+// Tracks how many registrations have been created for the current day using localStorage.
+function getNextDailyOrderNumber(date) {
+  const dateKey = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`
+  const storageKey = `ndcp_daily_order_${dateKey}`
+
+  let nextCount = 1
+  try {
+    nextCount = Number(window.localStorage.getItem(storageKey) || '0') + 1
+    window.localStorage.setItem(storageKey, String(nextCount))
+  } catch {
+    // localStorage unavailable (e.g. private mode); fall back to order 1.
+  }
+
+  return String(nextCount).padStart(3, '0')
+}
+
 function RegisterPage({
   businessTypes,
   selectedType,
@@ -46,7 +88,26 @@ function RegisterPage({
   const [karaokeRoomRows, setKaraokeRoomRows] = useState([
     { area: '', count: '' },
   ])
+  const [legalRepresentative, setLegalRepresentative] = useState('')
+  const [registrationInfo, setRegistrationInfo] = useState(null)
   const consentTermsRef = useRef(null)
+
+  const handleSubmitRegister = () => {
+    const abbreviation =
+      selectedType === 'karaoke'
+        ? karaokeSubTypeAbbreviations[karaokeSubType] ?? 'KR'
+        : businessTypeAbbreviations[selectedType] ?? 'KH'
+    const randomNumber = Math.floor(100000 + Math.random() * 900000)
+    const now = new Date()
+    const orderNumber = getNextDailyOrderNumber(now)
+
+    setRegistrationInfo({
+      code: `APPA-CMC-${abbreviation}-${randomNumber}-${orderNumber}`,
+      registrantName: legalRepresentative.trim(),
+      time: formatRegistrationTime(now),
+    })
+    setIsSuccessModalOpen(true)
+  }
 
   const handleRoomRowChange = (index, field, value) => {
     setKaraokeRoomRows((prev) =>
@@ -204,7 +265,7 @@ function RegisterPage({
                   Tên doanh nghiệp/Hộ kinh doanh <span className="required-star">*</span>
                 </label>
                 <div className="business-input-wrapper">
-                  <input type="text" placeholder="text input" />
+                  <input type="text" placeholder="Nhập tên doanh nghiệp/Hộ kinh doanh" />
                 </div>
               </div>
 
@@ -213,7 +274,7 @@ function RegisterPage({
                   MST <span className="required-star">*</span>
                 </label>
                 <div className="business-input-wrapper">
-                  <input type="text" placeholder="text input" />
+                  <input type="text" placeholder="Nhập MST" />
                 </div>
               </div>
 
@@ -232,7 +293,7 @@ function RegisterPage({
                         setSelectedWard(getWardsByCity(cityId)[0]?.id ?? '')
                       }}
                     >
-                      <option value="" disabled hidden>text input</option>
+                      <option value="" disabled hidden>Chọn tỉnh/thành phố</option>
                       {cities.map((city) => (
                         <option key={city.id} value={city.id}>
                           {city.name}
@@ -246,7 +307,7 @@ function RegisterPage({
                       value={selectedWard}
                       onChange={(e) => setSelectedWard(e.target.value)}
                     >
-                      <option value="" disabled hidden>text input</option>
+                      <option value="" disabled hidden>Chọn phường/xã</option>
                       {getWardsByCity(selectedCity).map((ward) => (
                         <option key={ward.id} value={ward.id}>
                           {ward.name}
@@ -258,7 +319,7 @@ function RegisterPage({
 
                 <div className="business-address-street">
                   <div className="business-input-wrapper">
-                    <input type="text" placeholder="text input" />
+                    <input type="text" placeholder="Nhập số nhà, tên đường" />
                   </div>
                 </div>
               </div>
@@ -268,7 +329,12 @@ function RegisterPage({
                   Người đại diện pháp luật <span className="required-star">*</span>
                 </label>
                 <div className="business-input-wrapper">
-                  <input type="text" placeholder="text input" />
+                  <input
+                    type="text"
+                    placeholder="Nhập họ và tên"
+                    value={legalRepresentative}
+                    onChange={(e) => setLegalRepresentative(e.target.value)}
+                  />
                 </div>
               </div>
 
@@ -283,7 +349,7 @@ function RegisterPage({
                     </select>
                   </div>
                   <div className="business-input-wrapper phone-input-wrapper">
-                    <input type="text" placeholder="number input" />
+                    <input type="text" placeholder="Nhập số điện thoại" />
                   </div>
                 </div>
               </div>
@@ -293,7 +359,7 @@ function RegisterPage({
                   Email liên hệ <span className="required-star">*</span>
                 </label>
                 <div className="business-input-wrapper">
-                  <input type="email" placeholder="text input" />
+                  <input type="email" placeholder="Nhập email" />
                 </div>
               </div>
             </div>
@@ -317,7 +383,7 @@ function RegisterPage({
                     Tên cơ sở kinh doanh <span className="required-star">*</span>
                   </label>
                   <div className="business-input-wrapper">
-                    <input type="text" placeholder="text input" />
+                    <input type="text" placeholder="Nhập tên cơ sở kinh doanh" />
                   </div>
                 </div>
 
@@ -336,7 +402,7 @@ function RegisterPage({
                           setStoreWard(getWardsByCity(cityId)[0]?.id ?? '')
                         }}
                       >
-                        <option value="" disabled hidden>text input</option>
+                        <option value="" disabled hidden>Chọn tỉnh/thành phố</option>
                         {cities.map((city) => (
                           <option key={city.id} value={city.id}>
                             {city.name}
@@ -350,7 +416,7 @@ function RegisterPage({
                         value={storeWard}
                         onChange={(e) => setStoreWard(e.target.value)}
                       >
-                        <option value="" disabled hidden>text input</option>
+                        <option value="" disabled hidden>Chọn phường/xã</option>
                         {getWardsByCity(storeCity).map((ward) => (
                           <option key={ward.id} value={ward.id}>
                             {ward.name}
@@ -362,7 +428,7 @@ function RegisterPage({
 
                   <div className="business-address-street">
                     <div className="business-input-wrapper">
-                      <input type="text" placeholder="text input" />
+                      <input type="text" placeholder="Nhập số nhà, tên đường" />
                     </div>
                   </div>
                 </div>
@@ -395,7 +461,7 @@ function RegisterPage({
                         <div className="business-input-wrapper">
                           <input
                             type="text"
-                            placeholder="text input"
+                            placeholder="Nhập diện tích phòng"
                             value={row.area}
                             onChange={(e) => handleRoomRowChange(index, 'area', e.target.value)}
                           />
@@ -409,7 +475,7 @@ function RegisterPage({
                         <div className="business-input-wrapper">
                           <input
                             type="text"
-                            placeholder="text input"
+                            placeholder="Nhập số phòng"
                             value={row.count}
                             onChange={(e) => handleRoomRowChange(index, 'count', e.target.value)}
                           />
@@ -602,8 +668,15 @@ function RegisterPage({
                     <label className="business-form-label">
                       Hạng <span className="required-star">*</span>
                     </label>
-                    <div className="business-input-wrapper">
-                      <input type="text" placeholder="text input" />
+                    <div className="business-input-wrapper select-wrapper">
+                      <select defaultValue="">
+                        <option value="" disabled hidden> Hạng sao</option>
+                        <option value="1">1 sao</option>
+                        <option value="2">2 sao</option>
+                        <option value="3">3 sao</option>
+                        <option value="4">4 sao</option>
+                        <option value="5">5 sao</option>
+                      </select>
                     </div>
                   </div>
 
@@ -725,7 +798,7 @@ function RegisterPage({
                 type="button"
                 className="btn-register-submit"
                 disabled={!isAgreed}
-                onClick={() => setIsSuccessModalOpen(true)}
+                onClick={handleSubmitRegister}
               >
                 ĐĂNG KÝ SỬ DỤNG
               </button>
@@ -746,17 +819,17 @@ function RegisterPage({
             <div className="register-success-card">
               <div className="register-success-row">
                 <span className="register-success-label">Mã đăng ký</span>
-                <span className="register-success-value">APPA-CMC-CP-260828-001</span>
+                <span className="register-success-value">{registrationInfo?.code}</span>
               </div>
 
               <div className="register-success-row">
                 <span className="register-success-label">Người đăng ký</span>
-                <span className="register-success-value">Công ty cổ phần ABC</span>
+                <span className="register-success-value">{registrationInfo?.registrantName}</span>
               </div>
 
               <div className="register-success-row">
                 <span className="register-success-label">Thời gian đăng ký</span>
-                <span className="register-success-value">15:30 28-08-2026</span>
+                <span className="register-success-value">{registrationInfo?.time}</span>
               </div>
             </div>
 
