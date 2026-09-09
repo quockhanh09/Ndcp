@@ -127,7 +127,10 @@ const businessTypes = [
   { id: 'karaoke', label: 'Karaoke', icon: KaraokeIcon, capMultiplier: null },
   { id: 'hotel', label: 'Khách sạn', icon: HotelIcon, capMultiplier: null },
 ]
-
+const appaContact = {
+  address: 'Tòa W1 - Vinhomes Westpoint - Phường Từ Liêm - Hà Nội',
+  phone: '0989115323',
+}
 const baseSalary = 2_530_000
 const vatRate = 0.08
 
@@ -176,9 +179,9 @@ const hotelRules = [
 
 const paymentCycles = [
   { id: '6months', label: '6 tháng' },
-  { id: '1year', label: '1 năm' },
-  { id: '2years', label: '2 năm' },
-  { id: '3years', label: '3 năm' },
+  { id: '12months', label: '12 tháng' },
+  { id: '24months', label: '24 tháng' },
+  { id: '36months', label: '36 tháng' },
 ]
 
 const formatVnd = (value) => `${new Intl.NumberFormat('vi-VN').format(Math.round(value))} ₫`
@@ -205,7 +208,7 @@ function App() {
   // Cơ sở kinh doanh
   const [storeCity, setStoreCity] = useState(cities[0]?.id ?? '')
   const [storeWard, setStoreWard] = useState(getWardsByCity(cities[0]?.id ?? '')[0]?.id ?? '')
-  const [selectedPaymentCycle, setSelectedPaymentCycle] = useState('1year')
+  const [selectedPaymentCycle, setSelectedPaymentCycle] = useState('12months')
   const [isAgreed, setIsAgreed] = useState(false)
   const [karaokeSubType, setKaraokeSubType] = useState('room')
 
@@ -502,7 +505,7 @@ function App() {
         />
       ) : (
         <>
-          <section className="hero-card">
+          {/* <section className="hero-card">
             <div className="hero-icon" aria-hidden="true">
               <DocumentIcon />
             </div>
@@ -513,7 +516,7 @@ function App() {
                 <span>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Hệ số điều chỉnh</span>
               </div>
             </div>
-          </section>
+          </section> */}
 
           <section className="section-card chooser-card">
             <div className="section-head with-step">
@@ -762,7 +765,7 @@ function App() {
         </>
       )}
 
-      <footer className="app-footer">
+      {/* <footer className="app-footer">
         <div className="footer-shell">
           <div className="footer-header">
             <img src={znsLogo} alt="ZNS logo" className="footer-logo" />
@@ -784,6 +787,27 @@ function App() {
               <img src={musicArt} alt="" />
             </div>
           </div>
+        </div>
+      </footer> */}
+      <footer className="app-footer" aria-label="Thông tin liên hệ APPA-CMC">
+        <div className="app-footer-inner">
+          <p className="app-footer-brand">Trung tâm Khai thác Quyền biểu diễn Âm nhạc Việt Nam Hội Bảo vệ quyền của nghệ sĩ biểu diễn âm nhạc Việt Nam.</p>
+          
+          <div className="app-footer-contacts">
+            <div className="app-footer-contact-chip">
+              <span className="app-footer-chip-label">Địa chỉ</span>
+              <span className="app-footer-chip-value">{appaContact.address}</span>
+            </div>
+            <a className="app-footer-contact-chip" href={`tel:${appaContact.phone.replace(/\s+/g, '')}`}>
+              <span className="app-footer-chip-label">Hotline</span>
+              <span className="app-footer-chip-value">{appaContact.phone}</span>
+            </a>
+            <a className="app-footer-contact-chip" href="mailto:cmc@appa.org.vn">
+              <span className="app-footer-chip-label">Email</span>
+              <span className="app-footer-chip-value">cmc@appa.org.vn</span>
+            </a>
+          </div>
+           <p className="app-footer-brand-1">Bản quyền dữ liệu thuộc về VK Entertainment JSC.</p>
         </div>
       </footer>
     </main>

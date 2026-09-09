@@ -175,7 +175,7 @@ function RegisterPage({
 
   return (
     <div className="register-page-shell">
-      <section className="hero-card">
+      {/* <section className="hero-card">
         <div className="hero-icon" aria-hidden="true">
           <DocumentIcon />
         </div>
@@ -186,7 +186,7 @@ function RegisterPage({
             <span>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Hệ số điều chỉnh</span>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="section-card chooser-card">
         <div className="section-head with-step">
@@ -511,7 +511,7 @@ function RegisterPage({
                     Tên cơ sở kinh doanh <span className="required-star">*</span>
                   </label>
                   <div className="business-input-wrapper">
-                    <input type="text" placeholder="text input" />
+                    <input type="text" placeholder="Nhập tên cơ sở kinh doanh" />
                   </div>
                 </div>
 
@@ -530,7 +530,7 @@ function RegisterPage({
                           setStoreWard(getWardsByCity(cityId)[0]?.id ?? '')
                         }}
                       >
-                        <option value="" disabled hidden>text input</option>
+                        <option value="" disabled hidden>Chọn tỉnh/thành phố</option>
                         {cities.map((city) => (
                           <option key={city.id} value={city.id}>
                             {city.name}
@@ -544,7 +544,7 @@ function RegisterPage({
                         value={storeWard}
                         onChange={(e) => setStoreWard(e.target.value)}
                       >
-                        <option value="" disabled hidden>text input</option>
+                        <option value="" disabled hidden>Chọn phường/xã</option>
                         {getWardsByCity(storeCity).map((ward) => (
                           <option key={ward.id} value={ward.id}>
                             {ward.name}
@@ -556,7 +556,7 @@ function RegisterPage({
 
                   <div className="business-address-street">
                     <div className="business-input-wrapper">
-                      <input type="text" placeholder="text input" />
+                      <input type="text" placeholder="Nhập số nhà, tên đường" />
                     </div>
                   </div>
                 </div>
@@ -584,7 +584,7 @@ function RegisterPage({
                     Số karaoke box <span className="required-star">*</span>
                   </label>
                   <div className="business-input-wrapper">
-                    <input type="text" placeholder="text input" />
+                    <input type="text" placeholder="Nhập số karaoke box" />
                   </div>
                 </div>
               </div>
@@ -595,7 +595,7 @@ function RegisterPage({
                     Tên cơ sở kinh doanh <span className="required-star">*</span>
                   </label>
                   <div className="business-input-wrapper">
-                    <input type="text" placeholder="text input" />
+                    <input type="text" placeholder="Nhập tên cơ sở kinh doanh" />
                   </div>
                 </div>
 
@@ -640,7 +640,7 @@ function RegisterPage({
 
                   <div className="business-address-street">
                     <div className="business-input-wrapper">
-                      <input type="text" placeholder="text input" />
+                      <input type="text" placeholder="Nhập số nhà, tên đường" />
                     </div>
                   </div>
                 </div>
@@ -685,7 +685,7 @@ function RegisterPage({
                       Số phòng
                     </label>
                     <div className="business-input-wrapper">
-                      <input type="text" placeholder="text input" />
+                      <input type="text" placeholder="Nhập số phòng" />
                     </div>
                   </div>
                 </div>
@@ -697,7 +697,7 @@ function RegisterPage({
                     Tên cơ sở kinh doanh <span className="required-star">*</span>
                   </label>
                   <div className="business-input-wrapper">
-                    <input type="text" placeholder="text input" />
+                    <input type="text" placeholder="Nhập tên cơ sở kinh doanh" />
                   </div>
                 </div>
 
@@ -716,7 +716,7 @@ function RegisterPage({
                           setStoreWard(getWardsByCity(cityId)[0]?.id ?? '')
                         }}
                       >
-                        <option value="" disabled hidden>text input</option>
+                        <option value="" disabled hidden>Chọn tỉnh/thành phố</option>
                         {cities.map((city) => (
                           <option key={city.id} value={city.id}>
                             {city.name}
@@ -730,7 +730,7 @@ function RegisterPage({
                         value={storeWard}
                         onChange={(e) => setStoreWard(e.target.value)}
                       >
-                        <option value="" disabled hidden>text input</option>
+                        <option value="" disabled hidden>Chọn phường/xã</option>
                         {getWardsByCity(storeCity).map((ward) => (
                           <option key={ward.id} value={ward.id}>
                             {ward.name}
@@ -742,7 +742,7 @@ function RegisterPage({
 
                   <div className="business-address-street">
                     <div className="business-input-wrapper">
-                      <input type="text" placeholder="text input" />
+                      <input type="text" placeholder="Nhập số nhà, tên đường" />
                     </div>
                   </div>
                 </div>
@@ -752,7 +752,7 @@ function RegisterPage({
                     Diện tích (m2) <span className="required-star">*</span>
                   </label>
                   <div className="business-input-wrapper">
-                    <input type="text" placeholder="text input" />
+                    <input type="text" placeholder="Nhập diện tích (m2)" />
                   </div>
                 </div>
 
