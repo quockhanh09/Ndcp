@@ -141,7 +141,8 @@
   margin: 0 0 10px;
   text-align: center;
   letter-spacing: 0.08em;
-  font-size: 0.84rem;
+  font-size: 15px;
+  line-height: 1.5;
   font-weight: 800;
   color: rgba(191, 219, 254, 0.9);
 }
@@ -150,7 +151,7 @@
   margin: 10px;
   text-align: center;
   letter-spacing: 0.08em;
-  font-size: 0.84rem;
+  font-size: 15px;
   font-weight: 800;
   color: rgba(191, 219, 254, 0.9);
 }
@@ -290,6 +291,7 @@
   font-weight: 700;
   box-shadow: none;
   text-transform: none;
+  text-decoration: none;
 }
 
 .header-action-primary:hover {
@@ -1034,7 +1036,7 @@
 .hero-copy h1 {
   margin: 0;
   font-family: var(--heading);
-  font-size: clamp(1.32rem, 2.1vw, 1.72rem);
+  font-size: 16px;
   line-height: 1.12;
   letter-spacing: -0.01em;
   color: #ffffff;

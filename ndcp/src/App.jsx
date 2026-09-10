@@ -510,7 +510,7 @@ function App() {
         />
       ) : (
         <>
-          {/* <section className="hero-card">
+          <section className="hero-card">
             <div className="hero-icon" aria-hidden="true">
               <DocumentIcon />
             </div>
@@ -521,7 +521,7 @@ function App() {
                 <span>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Hệ số điều chỉnh</span>
               </div>
             </div>
-          </section> */}
+          </section>
 
           <section className="section-card chooser-card">
             <div className="section-head with-step">
@@ -798,7 +798,11 @@ function App() {
       </footer> */}
       <footer className="app-footer" aria-label="Thông tin liên hệ APPA-CMC">
         <div className="app-footer-inner">
-          <p className="app-footer-brand">Trung tâm Khai thác Quyền biểu diễn Âm nhạc Việt Nam Hội Bảo vệ quyền của nghệ sĩ biểu diễn âm nhạc Việt Nam.</p>
+          <p className="app-footer-brand">
+            Trung tâm Khai thác Quyền biểu diễn Âm nhạc Việt Nam
+            <br />
+            Trực thuộc Hội Bảo vệ quyền của nghệ sĩ biểu diễn âm nhạc Việt Nam
+          </p>
           
           <div className="app-footer-contacts">
             <div className="app-footer-contact-chip">
