@@ -202,13 +202,13 @@ function App() {
   const [selectedType, setSelectedType] = useState(businessTypes[0].id)
   
   // Trụ sở doanh nghiệp
-  const [selectedCity, setSelectedCity] = useState(cities[0]?.id ?? '')
-  const [selectedWard, setSelectedWard] = useState(getWardsByCity(cities[0]?.id ?? '')[0]?.id ?? '')
+  const [selectedCity, setSelectedCity] = useState('')
+  const [selectedWard, setSelectedWard] = useState('')
   
   // Cơ sở kinh doanh
-  const [storeCity, setStoreCity] = useState(cities[0]?.id ?? '')
-  const [storeWard, setStoreWard] = useState(getWardsByCity(cities[0]?.id ?? '')[0]?.id ?? '')
-  const [selectedPaymentCycle, setSelectedPaymentCycle] = useState('12months')
+  const [storeCity, setStoreCity] = useState('')
+  const [storeWard, setStoreWard] = useState('')
+  const [selectedPaymentCycle, setSelectedPaymentCycle] = useState('')
   const [isAgreed, setIsAgreed] = useState(false)
   const [karaokeSubType, setKaraokeSubType] = useState('room')
 
@@ -467,10 +467,15 @@ function App() {
             </button>
           ))}
 
-          <button type="button" className="header-action header-action-primary">
+          <a
+            href="https://www.appa.org.vn/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="header-action header-action-primary"
+          >
             Về trang chủ
             <span className="header-action-icon-arrow" aria-hidden="true">↗</span>
-          </button>
+          </a>
         </div>
       </header>
 
@@ -567,6 +572,7 @@ function App() {
                       clearResult()
                     }}
                   >
+                    <option value="" disabled hidden>Chọn tỉnh/thành phố</option>
                     {cities.map((city) => (
                       <option key={city.id} value={city.id}>
                         {city.name}
@@ -584,6 +590,7 @@ function App() {
                       clearResult()
                     }}
                   >
+                    <option value="" disabled hidden>Chọn phường/xã</option>
                     {getWardsByCity(selectedCity).map((ward) => (
                       <option key={ward.id} value={ward.id}>
                         {ward.name}

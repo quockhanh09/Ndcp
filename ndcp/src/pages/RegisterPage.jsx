@@ -442,6 +442,7 @@ function RegisterPage({
                       value={selectedPaymentCycle}
                       onChange={(e) => setSelectedPaymentCycle(e.target.value)}
                     >
+                      <option value="" disabled hidden>Chọn chu kỳ thanh toán</option>
                       {paymentCycles.map((cycle) => (
                         <option key={cycle.id} value={cycle.id}>
                           {cycle.label}
@@ -570,6 +571,7 @@ function RegisterPage({
                       value={selectedPaymentCycle}
                       onChange={(e) => setSelectedPaymentCycle(e.target.value)}
                     >
+                      <option value="" disabled hidden>Chọn chu kỳ thanh toán</option>
                       {paymentCycles.map((cycle) => (
                         <option key={cycle.id} value={cycle.id}>
                           {cycle.label}
@@ -614,7 +616,7 @@ function RegisterPage({
                           setStoreWard(getWardsByCity(cityId)[0]?.id ?? '')
                         }}
                       >
-                        <option value="" disabled hidden>text input</option>
+                        <option value="" disabled hidden>Chọn tỉnh/thành phố</option>
                         {cities.map((city) => (
                           <option key={city.id} value={city.id}>
                             {city.name}
@@ -628,7 +630,7 @@ function RegisterPage({
                         value={storeWard}
                         onChange={(e) => setStoreWard(e.target.value)}
                       >
-                        <option value="" disabled hidden>text input</option>
+                        <option value="" disabled hidden>Chọn phường/xã</option>
                         {getWardsByCity(storeCity).map((ward) => (
                           <option key={ward.id} value={ward.id}>
                             {ward.name}
@@ -654,6 +656,7 @@ function RegisterPage({
                       value={selectedPaymentCycle}
                       onChange={(e) => setSelectedPaymentCycle(e.target.value)}
                     >
+                      <option value="" disabled hidden>Chọn chu kỳ thanh toán</option>
                       {paymentCycles.map((cycle) => (
                         <option key={cycle.id} value={cycle.id}>
                           {cycle.label}
@@ -765,6 +768,7 @@ function RegisterPage({
                       value={selectedPaymentCycle}
                       onChange={(e) => setSelectedPaymentCycle(e.target.value)}
                     >
+                      <option value="" disabled hidden>Chọn chu kỳ thanh toán</option>
                       {paymentCycles.map((cycle) => (
                         <option key={cycle.id} value={cycle.id}>
                           {cycle.label}
