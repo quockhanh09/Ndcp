@@ -13,7 +13,7 @@
   --body: 'Inter', 'Segoe UI', sans-serif;
   --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 
-  font: 16px/1.46 var(--body);
+  font: 12px/1.46 var(--body);
   letter-spacing: 0.01em;
   color: var(--text);
   background:
