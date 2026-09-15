@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import './App.css'
 import logo from './assets/Appa-cmc-nen-toi.png'
-import znsLogo from './assets/Frame 344.png'
-import musicArt from './assets/image66.png'
 import RegisterPage from './pages/RegisterPage'
 import { cities, getWardsByCity, getActiveRegion } from './data/vietnamLocations'
 
@@ -127,6 +125,7 @@ const businessTypes = [
   { id: 'karaoke', label: 'Karaoke', icon: KaraokeIcon, capMultiplier: null },
   { id: 'hotel', label: 'Khách sạn', icon: HotelIcon, capMultiplier: null },
 ]
+
 const appaContact = {
   address: 'Tòa W1 - Vinhomes Westpoint - Phường Từ Liêm - Hà Nội',
   phone: '0989115323',
@@ -214,14 +213,14 @@ function App() {
 
   const [area, setArea] = useState('')
   const [karaokeCounts, setKaraokeCounts] = useState({
-    roomSmall: '0',
-    roomMid: '0',
-    roomLarge: '0',
-    vipBox: '0',
+    roomSmall: '',
+    roomMid: '',
+    roomLarge: '',
+    vipBox: '',
   })
   const [hotelCounts, setHotelCounts] = useState({
-    room45: '0',
-    room13: '0',
+    room45: '',
+    room13: '',
   })
   const [feeResult, setFeeResult] = useState(null)
 
@@ -446,37 +445,35 @@ function App() {
           <img src={logo} alt="Logo Appa CMC" className="app-brand-logo" />
         </div>
 
-        <div className="app-header-actions">
-          {[
-            { id: 'fee', label: 'Biểu mức theo quy định' },
-            { id: 'register', label: 'Đăng ký sử dụng' },
-            { id: 'lookup', label: 'Tra cứu đăng ký' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              className={`header-action ${activeView === tab.id ? 'is-active' : ''}`}
-              onClick={() => {
-                setActiveView(tab.id)
-                if (tab.id !== 'register') {
-                  setIsAgreed(false)
-                }
-              }}
-            >
-              {tab.label}
-            </button>
-          ))}
-
-          <a
-            href="https://www.appa.org.vn/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="header-action header-action-primary"
+        {[
+          { id: 'fee', label: 'Biểu mức theo quy định' },
+          { id: 'register', label: 'Đăng ký sử dụng' },
+          { id: 'lookup', label: 'Tra cứu đăng ký' },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            className={`header-action ${activeView === tab.id ? 'is-active' : ''}`}
+            onClick={() => {
+              setActiveView(tab.id)
+              if (tab.id !== 'register') {
+                setIsAgreed(false)
+              }
+            }}
           >
-            Về trang chủ
-            <span className="header-action-icon-arrow" aria-hidden="true">↗</span>
-          </a>
-        </div>
+            {tab.label}
+          </button>
+        ))}
+
+        <a
+          href="https://www.appa.org.vn/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="header-action header-action-primary"
+        >
+          Về trang chủ
+          <span className="header-action-icon-arrow" aria-hidden="true">↗</span>
+        </a>
       </header>
 
       {isRegisterView ? (
@@ -629,7 +626,7 @@ function App() {
                               [rule.key]: event.target.value,
                             }))
                           }
-                          placeholder="0"
+                          placeholder="Nhập số phòng"
                         />
                       </label>
                     ))}
@@ -649,7 +646,7 @@ function App() {
                             [karaokeBoxRule.key]: event.target.value,
                           }))
                         }
-                        placeholder="0"
+                        placeholder="Nhập số box"
                       />
                     </label>
                   </div>
@@ -673,7 +670,7 @@ function App() {
                               [rule.key]: event.target.value,
                             }))
                           }
-                          placeholder="0"
+                          placeholder="Nhập số phòng"
                         />
                       </label>
                     ))}
@@ -709,7 +706,16 @@ function App() {
               <article className="fee-summary-card">
                 <div className="fee-summary-body">
                   <div className="fee-hero">
-                    <p>Phí bản quyền năm (theo NĐ 17/2023)</p>
+                    <div className="fee-hero-top">
+                      <p>Phí bản quyền năm (theo NĐ 17/2023)</p>
+                      <button
+                        type="button"
+                        className="fee-register-cta"
+                        onClick={() => setActiveView('register')}
+                      >
+                        Đăng ký sử dụng
+                      </button>
+                    </div>
                     <div className="fee-hero-sub">
                       <span>Số tiền gốc: {formatVnd(feeResult.baseAmount)}</span>
                       <span>Khu vực áp dụng: {feeResult.region?.label} (Hệ số K = {feeResult.region?.multiplier})</span>
@@ -772,30 +778,6 @@ function App() {
         </>
       )}
 
-      {/* <footer className="app-footer">
-        <div className="footer-shell">
-          <div className="footer-header">
-            <img src={znsLogo} alt="ZNS logo" className="footer-logo" />
-          </div>
-
-          <div className="footer-body">
-            <div className="footer-contact">
-              <p>Hà Nội: Tòa W1, Vinhomes Westpoint, Đỗ Đức Dục, Phường Từ Liêm, thành phố Hà Nội</p>
-              <p>TP. HCM: 22A Cộng Hòa, Phường Tân Sơn Nhất, Thành phố Hồ Chí Minh</p>
-              <p>
-                TEL: <a href="tel:+84989115323">(+84) 989 115 323</a>
-              </p>
-              <p>
-                E-MAIL: <a href="mailto:info@appa.org.vn">info@appa.org.vn</a>
-              </p>
-            </div>
-
-            <div className="footer-illustration" aria-hidden="true">
-              <img src={musicArt} alt="" />
-            </div>
-          </div>
-        </div>
-      </footer> */}
       <footer className="app-footer" aria-label="Thông tin liên hệ APPA-CMC">
         <div className="app-footer-inner">
           <p className="app-footer-brand">

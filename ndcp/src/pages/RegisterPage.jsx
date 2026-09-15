@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 import checkCircle from '../assets/Check-circle.png'
 
-// NHẬP URL GOOGLE APPS SCRIPT ĐÃ DEPLOY TẠI ĐÂY
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzD7AVwQoWvYkUyzHGVM9XFqvwAm8cX5C_kkn_MExe7u_S0EE-H7xsYJvw6JLrBB5ks/exec";
 
 const businessTypeAbbreviations = {
@@ -64,6 +63,10 @@ function RegisterPage({
   cities,
   getWardsByCity,
   paymentCycles,
+  karaokeRoomRules,
+  karaokeBoxRule,
+  karaokeCounts,
+  setKaraokeCounts,
   karaokeSubType,
   setKaraokeSubType,
 }) {
@@ -88,9 +91,6 @@ function RegisterPage({
   const [hotelRooms, setHotelRooms] = useState('')
   const [karaokeBoxCount, setKaraokeBoxCount] = useState('')
 
-  const [karaokeRoomRows, setKaraokeRoomRows] = useState([
-    { area: '', count: '' },
-  ])
   const [registrationInfo, setRegistrationInfo] = useState(null)
   const consentTermsRef = useRef(null)
 
@@ -117,7 +117,10 @@ function RegisterPage({
 
     let scaleDetails = ''
     if (selectedType === 'karaoke' && karaokeSubType === 'room') {
-      scaleDetails = karaokeRoomRows.map(r => `Diện tích: ${r.area}m2, Số phòng: ${r.count}`).join(' | ')
+      scaleDetails = [...karaokeRoomRules, karaokeBoxRule]
+        .filter((rule) => Number(karaokeCounts[rule.key]) > 0)
+        .map((rule) => `${rule.label}: ${karaokeCounts[rule.key]}`)
+        .join(' | ')
     } else if (selectedType === 'karaoke' && karaokeSubType === 'box') {
       scaleDetails = `Số Karaoke Box: ${karaokeBoxCount}`
     } else if (selectedType === 'hotel') {
@@ -163,25 +166,6 @@ function RegisterPage({
       })
       setIsSuccessModalOpen(true)
     }
-  }
-
-  const handleRoomRowChange = (index, field, value) => {
-    setKaraokeRoomRows((prev) =>
-      prev.map((row, rowIndex) =>
-        rowIndex === index ? { ...row, [field]: value } : row,
-      ),
-    )
-  }
-
-  const handleAddKaraokeRoomRow = () => {
-    setKaraokeRoomRows((prev) => [...prev, { area: '', count: '' }])
-  }
-
-  const handleRemoveKaraokeRoomRow = (index) => {
-    setKaraokeRoomRows((prev) => {
-      if (prev.length === 1) return [{ area: '', count: '' }]
-      return prev.filter((_, rowIndex) => rowIndex !== index)
-    })
   }
 
   const handleOpenConsentModal = () => {
@@ -514,57 +498,50 @@ function RegisterPage({
                   </div>
                 </div>
 
-                <div className="karaoke-room-list">
-                  {karaokeRoomRows.map((row, index) => (
-                    <div className="karaoke-room-row" key={index}>
-                      <div className="business-form-field karaoke-room-field">
-                        <label className="business-form-label">
-                          Diện tích (m2) <span className="required-star">*</span>
-                        </label>
-                        <div className="business-input-wrapper">
-                          <input
-                            type="text"
-                            placeholder="Nhập diện tích phòng"
-                            value={row.area}
-                            onChange={(e) => handleRoomRowChange(index, 'area', e.target.value)}
-                          />
-                        </div>
+                <div className="business-form-grid">
+                  {karaokeRoomRules.map((rule) => (
+                    <div className="business-form-field" key={rule.key}>
+                      <label className="business-form-label">
+                        {rule.label} <em className="karaoke-hint">{rule.hint}</em>
+                      </label>
+                      <div className="business-input-wrapper">
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          placeholder="Nhập số phòng"
+                          value={karaokeCounts[rule.key]}
+                          onChange={(e) =>
+                            setKaraokeCounts((prev) => ({
+                              ...prev,
+                              [rule.key]: e.target.value,
+                            }))
+                          }
+                        />
                       </div>
-
-                      <div className="business-form-field karaoke-room-field">
-                        <label className="business-form-label">
-                          Số phòng
-                        </label>
-                        <div className="business-input-wrapper">
-                          <input
-                            type="text"
-                            placeholder="Nhập số phòng"
-                            value={row.count}
-                            onChange={(e) => handleRoomRowChange(index, 'count', e.target.value)}
-                          />
-                        </div>
-                      </div>
-
-                      {index === karaokeRoomRows.length - 1 ? (
-                        <button type="button" className="karaoke-room-add-button" onClick={handleAddKaraokeRoomRow}>
-                          <span>+ thêm</span>
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          className="karaoke-room-delete-button"
-                          onClick={() => handleRemoveKaraokeRoomRow(index)}
-                          aria-label="Xoá dòng"
-                          title="Xoá dòng"
-                        >
-                          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <path d="M4 7h16M9 7V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5V7m-9 0 1.1 12.2A2 2 0 0 0 9.1 21h5.8a2 2 0 0 0 2-1.8L18 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M10 11v6M14 11v6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                          </svg>
-                        </button>
-                      )}
                     </div>
                   ))}
+
+                  <div className="business-form-field">
+                    <label className="business-form-label">
+                      {karaokeBoxRule.label} <em className="karaoke-hint">{karaokeBoxRule.hint}</em>
+                    </label>
+                    <div className="business-input-wrapper">
+                      <input
+                        type="number"
+                        min="0"
+                        step="1"
+                        placeholder="Nhập số box"
+                        value={karaokeCounts[karaokeBoxRule.key]}
+                        onChange={(e) =>
+                          setKaraokeCounts((prev) => ({
+                            ...prev,
+                            [karaokeBoxRule.key]: e.target.value,
+                          }))
+                        }
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : selectedType === 'karaoke' && karaokeSubType === 'box' ? (
@@ -990,30 +967,6 @@ function RegisterPage({
                   Nam, tổ chức đại diện tập thể quyền liên quan trực thuộc Hiệp hội Công nghiệp Ghi âm
                   Việt Nam (RIAV), hoạt động theo Công văn số 11509/BNV-TCPCP ngày 02/10/2025 của Bộ Nội vụ.
                 </p>
-                <p className="terms-paragraph">
-                  1.2. <strong>"Đơn vị sử dụng" / "Người đăng ký" / "Khách hàng":</strong> Tổ chức, cá nhân, hộ kinh
-                  doanh thực hiện đăng ký, kê khai thông tin và sử dụng dịch vụ cấp phép quyền liên quan
-                  qua hệ thống của Trung tâm.
-                </p>
-                <p className="terms-paragraph">
-                  1.3. <strong>"Quyền liên quan":</strong> Quyền của nhà sản xuất bản ghi âm, ghi hình và quyền của người
-                  biểu diễn đối với bản ghi đã công bố, theo quy định của Luật Sở hữu trí tuệ và Nghị định
-                  17/2023/NĐ-CP.
-                </p>
-                <p className="terms-paragraph">
-                  1.4. <strong>"Giấy chứng nhận cấp phép":</strong> Văn bản (kèm mã QR xác minh) do Trung tâm phát hành,
-                  xác nhận Bên sử dụng đã được cấp phép sử dụng Quyền liên quan đối với bản ghi trong phạm vi và thời
-                  hạn ghi trên giấy.
-                </p>
-                <p className="terms-paragraph">
-                  1.5. <strong>Phạm vi áp dụng:</strong> Điều khoản này áp dụng cho toàn bộ các loại hình cấp phép do Trung tâm
-                  cung cấp, bao gồm nhưng không giới hạn:
-                </p>
-                <ul className="terms-list">
-                  <li>Cơ sở có nhạc nền (cà phê, nhà hàng, khách sạn, cửa hàng, spa,...);</li>
-                  <li>Cơ sở giải trí (karaoke, bar, vũ trường,...);</li>
-                  <li>Phát sóng (phát thanh, truyền hình), quảng cáo, sự kiện biểu diễn, phim ảnh, vận tải hành khách và các loại hình kinh doanh/khai thác khác.</li>
-                </ul>
 
                 <h4 className="terms-section-title">ĐIỀU 2: PHẠM VI CẤP PHÉP VÀ LƯU Ý QUAN TRỌNG VỀ QUYỀN TÁC GIẢ</h4>
                 <p className="terms-paragraph">

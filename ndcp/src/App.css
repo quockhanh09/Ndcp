@@ -201,7 +201,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 0;
   padding: 12px 0;
   background: transparent;
   border: none;
@@ -221,16 +221,6 @@
   height: 52px;
   max-width: 100%;
   object-fit: contain;
-}
-
-.app-header-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 20px;
-  flex: 1;
-  flex-wrap: nowrap;
-  position: relative;
 }
 
 .header-action {
@@ -309,6 +299,8 @@
   .app-header-bar {
     flex-direction: column;
     align-items: stretch;
+    flex-wrap: wrap;
+    gap: 10px;
     padding: 12px 10px;
   }
 
@@ -320,12 +312,6 @@
 
   .app-brand-logo {
     height: 44px;
-  }
-
-  .app-header-actions {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
   }
 
   .header-action {
@@ -586,7 +572,6 @@
   color: #ffffff;
   font-size: 0.95rem;
   outline: none;
-  font-style: italic;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   appearance: none;
   -webkit-appearance: none;
@@ -1289,6 +1274,11 @@
 .field input:focus {
   border-color: rgba(100, 150, 220, 0.5);
   box-shadow: 0 0 0 3px rgba(60, 100, 200, 0.12), 0 0 10px rgba(60, 100, 200, 0.1);
+}
+
+.field input::placeholder {
+  color: rgba(192, 216, 240, 0.45);
+  font-style: italic;
 }
 
 .field input.readonly-field {
