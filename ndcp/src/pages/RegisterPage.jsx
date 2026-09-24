@@ -84,6 +84,9 @@ function RegisterPage({
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   
+  // State lưu file giấy phép kinh doanh đính kèm
+  const [licenseFile, setLicenseFile] = useState(null)
+  
   const [storeName, setStoreName] = useState('')
   const [storeStreet, setStoreStreet] = useState('')
   const [area, setArea] = useState('')
@@ -93,6 +96,23 @@ function RegisterPage({
 
   const [registrationInfo, setRegistrationInfo] = useState(null)
   const consentTermsRef = useRef(null)
+
+  // Hàm chuyển đổi file sang Base64 để gửi qua Google Apps Script
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
+        resolve({
+          base64: encoded,
+          mimeType: file.type,
+          name: file.name
+        });
+      };
+      reader.onerror = error => reject(error);
+    });
+  };
 
   const handleSubmitRegister = async () => {
     if (isSubmitting) return
@@ -129,6 +149,20 @@ function RegisterPage({
       scaleDetails = `Diện tích: ${area} m2`
     }
 
+    let fileDataObj = { fileData: '', fileName: '', fileMimeType: '' };
+    if (licenseFile) {
+      try {
+        const converted = await convertFileToBase64(licenseFile);
+        fileDataObj = {
+          fileData: converted.base64,
+          fileName: converted.name,
+          fileMimeType: converted.mimeType
+        };
+      } catch (err) {
+        console.error("Lỗi đọc file:", err);
+      }
+    }
+
     const payload = {
       registrationCode,
       businessType: selectedType,
@@ -143,7 +177,8 @@ function RegisterPage({
       storeName,
       storeAddress: fullStoreAddress,
       paymentCycle: paymentCycles.find(p => p.id === selectedPaymentCycle)?.label || selectedPaymentCycle,
-      scaleDetails
+      scaleDetails,
+      ...fileDataObj
     }
 
     try {
@@ -387,7 +422,7 @@ function RegisterPage({
 
               <div className="business-form-field">
                 <label className="business-form-label">
-                  Email liên hệ <span className="required-star">*</span>
+                  Email liên hệ (hóa đơn điện tử xin vui lòng gửi qua email công ty) <span className="required-star">*</span>
                 </label>
                 <div className="business-input-wrapper">
                   <input 
@@ -398,6 +433,27 @@ function RegisterPage({
                   />
                 </div>
               </div>
+
+              {/* Thanh tải lên giấy phép kinh doanh ở dưới cùng phần Thông tin doanh nghiệp */}
+              <div className="business-form-field full-width" style={{ marginTop: '8px' }}>
+                <label className="business-form-label">
+                  Giấy phép kinh doanh (Đính kèm file ảnh hoặc PDF) <span className="required-star">*</span>
+                </label>
+                <div className="business-input-wrapper" style={{ display: 'flex', alignItems: 'center', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.15)', borderRadius: '12px', padding: '6px 16px' }}>
+                  <input 
+                    type="file" 
+                    accept="image/*,.pdf"
+                    onChange={(e) => setLicenseFile(e.target.files[0])}
+                    style={{ border: 'none', background: 'transparent', padding: '8px 0', color: '#ffffff', width: '100%' }}
+                  />
+                </div>
+                {licenseFile && (
+                  <span style={{ fontSize: '0.85rem', color: '#8fe08c', marginTop: '4px' }}>
+                    Đã chọn: {licenseFile.name}
+                  </span>
+                )}
+              </div>
+
             </div>
           </div>
         </div>
