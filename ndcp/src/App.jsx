@@ -108,7 +108,7 @@ function HotelIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path d="M5 7.2h14V20H5z" fill="currentColor" opacity="0.16" />
-      <path d="M7.1 7.2V4.8h9.8v2.4M8.2 10.1h2.6v2.6H8.2Zm5 0h2.6v2.6h-2.6ZM8.2 14h2.6v2.6H8.2Zm5 0h2.6v2.6h-2.6Z" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+      <path d="M7.1 7.2V4.8h9.8v2.4M8.2 10.1h2.6v2.6H8.2Zm5 0h2.6v2.6h-2.6ZM8.2 14h2.6v2.6H8.2Zm5 0h2.6v2.6h-2.6Z" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
     </svg>
   )
 }
@@ -706,17 +706,28 @@ function App() {
               <article className="fee-summary-card">
                 <div className="fee-summary-body">
                   <div className="fee-hero">
-                    <div className="fee-hero-top">
+                    <div className="fee-hero-top" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <p>Phí bản quyền năm (theo NĐ 17/2023)</p>
                       <button
                         type="button"
                         className="fee-register-cta"
                         onClick={() => setActiveView('register')}
+                        style={{
+                          backgroundColor: '#22c55e',
+                          color: '#ffffff',
+                          border: 'none',
+                          borderRadius: '8px',
+                          padding: '8px 18px',
+                          fontWeight: 'bold',
+                          cursor: 'pointer',
+                          boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)',
+                          transition: 'background 0.2s ease',
+                        }}
                       >
                         Đăng ký sử dụng
                       </button>
                     </div>
-                    <div className="fee-hero-sub">
+                    <div className="fee-hero-sub" style={{ marginTop: '10px' }}>
                       <span>Số tiền gốc: {formatVnd(feeResult.baseAmount)}</span>
                       <span>Khu vực áp dụng: {feeResult.region?.label} (Hệ số K = {feeResult.region?.multiplier})</span>
                       <span>Phí bản quyền trước thuế: {formatVnd(feeResult.annualFee)}</span>
