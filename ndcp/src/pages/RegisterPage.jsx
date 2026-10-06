@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import checkCircle from '../assets/Check-circle.png'
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzD7AVwQoWvYkUyzHGVM9XFqvwAm8cX5C_kkn_MExe7u_S0EE-H7xsYJvw6JLrBB5ks/exec";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'
 
 const businessTypeAbbreviations = {
   cafe: 'CF',
@@ -69,12 +70,14 @@ function RegisterPage({
   setKaraokeCounts,
   karaokeSubType,
   setKaraokeSubType,
+  feeResult,
 }) {
   const [isConsentModalOpen, setIsConsentModalOpen] = useState(false)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
   const [hasReadConsent, setHasReadConsent] = useState(false)
   const [modalConsentChecked, setModalConsentChecked] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [registrationError, setRegistrationError] = useState('')
 
   // State các trường thông tin Form
   const [companyName, setCompanyName] = useState('')
@@ -117,6 +120,7 @@ function RegisterPage({
   const handleSubmitRegister = async () => {
     if (isSubmitting) return
     setIsSubmitting(true)
+    setRegistrationError('')
 
     const abbreviation =
       selectedType === 'karaoke'
@@ -159,7 +163,9 @@ function RegisterPage({
           fileMimeType: converted.mimeType
         };
       } catch (err) {
-        console.error("Lỗi đọc file:", err);
+        setRegistrationError(`Không thể đọc tệp đính kèm: ${err.message}`)
+        setIsSubmitting(false)
+        return
       }
     }
 
@@ -178,28 +184,44 @@ function RegisterPage({
       storeAddress: fullStoreAddress,
       paymentCycle: paymentCycles.find(p => p.id === selectedPaymentCycle)?.label || selectedPaymentCycle,
       scaleDetails,
+      feeAmount: typeof feeResult?.totalWithVat === 'number' ? feeResult.totalWithVat : null,
       ...fileDataObj
     }
 
     try {
-      if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        })
+      const { fileData: _fileData, ...cmsPayload } = payload
+      const response = await fetch(`${API_BASE_URL}/registrations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cmsPayload),
+      })
+      const responseData = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        throw new Error(responseData.message || 'Không thể gửi hồ sơ đến APPA CMS')
       }
-    } catch (err) {
-      console.error("Lỗi gửi dữ liệu về Apps Script:", err)
-    } finally {
-      setIsSubmitting(false)
+
+      if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
+        try {
+          await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          })
+        } catch (err) {
+          console.error('Đã lưu hồ sơ vào APPA CMS nhưng không gửi được sang Apps Script:', err)
+        }
+      }
       setRegistrationInfo({
-        code: registrationCode,
+        code: responseData.registration?.id || registrationCode,
         registrantName: legalRepresentative.trim(),
         time: formatRegistrationTime(now),
       })
       setIsSuccessModalOpen(true)
+    } catch (err) {
+      setRegistrationError(err.message || 'Không thể gửi hồ sơ đến APPA CMS')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -941,6 +963,11 @@ function RegisterPage({
             </label>
 
             <div className="business-submit-wrapper">
+              {registrationError && (
+                <p role="alert" style={{ color: '#d93838', fontSize: '13px', marginBottom: '12px' }}>
+                  {registrationError}
+                </p>
+              )}
               <button
                 type="button"
                 className="btn-register-submit"

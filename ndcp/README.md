@@ -48,3 +48,10 @@ vercel --prod
 	- `buildCommand`: `npm run build`
 	- `outputDirectory`: `dist`
 	- SPA rewrite to `index.html` for client-side routing
+
+### APPA CMS integration
+
+Registration submissions are sent to `POST /api/registrations` on the APPA CMC
+backend. `.env.production` points to `https://appa-cmc-be.onrender.com/api`, and
+`.env.development` points to `http://localhost:4000/api`. Deploy the backend
+changes before submitting registrations from the website.

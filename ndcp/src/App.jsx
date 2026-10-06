@@ -504,6 +504,7 @@ function App() {
           setKaraokeCounts={setKaraokeCounts}
           karaokeSubType={karaokeSubType}
           setKaraokeSubType={setKaraokeSubType}
+          feeResult={feeResult}
         />
       ) : (
         <>
