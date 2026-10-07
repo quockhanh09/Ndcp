@@ -233,6 +233,12 @@ function App() {
 
   const currentBusinessType = businessTypes.find((b) => b.id === selectedType)
 
+  const openRegistration = () => {
+    setStoreCity(selectedCity)
+    setStoreWard(selectedWard)
+    setActiveView('register')
+  }
+
   const handleCalculate = () => {
     let rows = []
     let totalA = 0
@@ -455,7 +461,11 @@ function App() {
             type="button"
             className={`header-action ${activeView === tab.id ? 'is-active' : ''}`}
             onClick={() => {
-              setActiveView(tab.id)
+              if (tab.id === 'register') {
+                openRegistration()
+              } else {
+                setActiveView(tab.id)
+              }
               if (tab.id !== 'register') {
                 setIsAgreed(false)
               }
@@ -490,6 +500,8 @@ function App() {
           storeWard={storeWard}
           setStoreCity={setStoreCity}
           setStoreWard={setStoreWard}
+          area={area}
+          setArea={setArea}
           selectedPaymentCycle={selectedPaymentCycle}
           setSelectedPaymentCycle={setSelectedPaymentCycle}
           isAgreed={isAgreed}
@@ -712,7 +724,7 @@ function App() {
                       <button
                         type="button"
                         className="fee-register-cta"
-                        onClick={() => setActiveView('register')}
+                        onClick={openRegistration}
                         style={{
                           backgroundColor: '#22c55e',
                           color: '#ffffff',

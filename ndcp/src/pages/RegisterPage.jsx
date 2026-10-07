@@ -21,6 +21,10 @@ const karaokeSubTypeAbbreviations = {
   box: 'KRB',
 }
 
+function formatVnd(value) {
+  return `${new Intl.NumberFormat('vi-VN').format(Math.round(value))} ₫`
+}
+
 function formatRegistrationTime(date) {
   const hours = String(date.getHours()).padStart(2, '0')
   const minutes = String(date.getMinutes()).padStart(2, '0')
@@ -56,6 +60,8 @@ function RegisterPage({
   storeWard,
   setStoreCity,
   setStoreWard,
+  area,
+  setArea,
   selectedPaymentCycle,
   setSelectedPaymentCycle,
   isAgreed,
@@ -92,7 +98,6 @@ function RegisterPage({
   
   const [storeName, setStoreName] = useState('')
   const [storeStreet, setStoreStreet] = useState('')
-  const [area, setArea] = useState('')
   const [hotelStar, setHotelStar] = useState('')
   const [hotelRooms, setHotelRooms] = useState('')
   const [karaokeBoxCount, setKaraokeBoxCount] = useState('')
@@ -576,6 +581,20 @@ function RegisterPage({
                   </div>
                 </div>
 
+                <div className="business-form-field full-width">
+                  <label className="business-form-label">
+                    Tổng chi phí thanh toán
+                  </label>
+                  <div className="business-input-wrapper">
+                    <input
+                      type="text"
+                      readOnly
+                      className="total-fee-field"
+                      value={feeResult ? formatVnd(feeResult.totalWithVat) : 'Chưa tính phí bản quyền'}
+                    />
+                  </div>
+                </div>
+
                 <div className="business-form-grid">
                   {karaokeRoomRules.map((rule) => (
                     <div className="business-form-field" key={rule.key}>
@@ -710,6 +729,20 @@ function RegisterPage({
 
                 <div className="business-form-field full-width">
                   <label className="business-form-label">
+                    Tổng chi phí thanh toán
+                  </label>
+                  <div className="business-input-wrapper">
+                    <input
+                      type="text"
+                      readOnly
+                      className="total-fee-field"
+                      value={feeResult ? formatVnd(feeResult.totalWithVat) : 'Chưa tính phí bản quyền'}
+                    />
+                  </div>
+                </div>
+
+                <div className="business-form-field full-width">
+                  <label className="business-form-label">
                     Số karaoke box <span className="required-star">*</span>
                   </label>
                   <div className="business-input-wrapper">
@@ -805,6 +838,20 @@ function RegisterPage({
                         </option>
                       ))}
                     </select>
+                  </div>
+                </div>
+
+                <div className="business-form-field full-width">
+                  <label className="business-form-label">
+                    Tổng chi phí thanh toán
+                  </label>
+                  <div className="business-input-wrapper">
+                    <input
+                      type="text"
+                      readOnly
+                      className="total-fee-field"
+                      value={feeResult ? formatVnd(feeResult.totalWithVat) : 'Chưa tính phí bản quyền'}
+                    />
                   </div>
                 </div>
 
@@ -940,6 +987,20 @@ function RegisterPage({
                         </option>
                       ))}
                     </select>
+                  </div>
+                </div>
+
+                <div className="business-form-field full-width">
+                  <label className="business-form-label">
+                    Tổng chi phí thanh toán
+                  </label>
+                  <div className="business-input-wrapper">
+                    <input
+                      type="text"
+                      readOnly
+                      className="total-fee-field"
+                      value={feeResult ? formatVnd(feeResult.totalWithVat) : 'Chưa tính phí bản quyền'}
+                    />
                   </div>
                 </div>
               </div>

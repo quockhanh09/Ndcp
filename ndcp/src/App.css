@@ -594,6 +594,14 @@
   font-style: normal;
 }
 
+.business-input-wrapper input.total-fee-field {
+  color: #ffd05a;
+  font-weight: 700;
+  cursor: default;
+  background: rgba(255, 208, 90, 0.08);
+  border-color: rgba(255, 208, 90, 0.35);
+}
+
 .business-input-wrapper.select-wrapper::after {
   content: '';
   position: absolute;
