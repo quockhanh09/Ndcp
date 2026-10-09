@@ -244,6 +244,11 @@
   position: relative;
 }
 
+/* Xám màu chữ và mờ đi khi chưa vào trang Đăng ký sử dụng */
+.header-action.is-inactive-register {
+  color: rgba(150, 160, 180, 0.55);
+}
+
 .header-action:hover {
   opacity: 0.85;
   transform: translateY(-1px);

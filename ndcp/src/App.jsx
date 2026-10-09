@@ -197,7 +197,7 @@ function calculateTierQuantity(area, min, max) {
 }
 
 function App() {
-  const [activeView, setActiveView] = useState('register')
+  const [activeView, setActiveView] = useState('fee')
   const [selectedType, setSelectedType] = useState(businessTypes[0].id)
   
   // Trụ sở doanh nghiệp
@@ -455,25 +455,32 @@ function App() {
           { id: 'fee', label: 'Biểu mức theo quy định' },
           { id: 'register', label: 'Đăng ký sử dụng' },
           { id: 'lookup', label: 'Tra cứu đăng ký' },
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            className={`header-action ${activeView === tab.id ? 'is-active' : ''}`}
-            onClick={() => {
-              if (tab.id === 'register') {
-                openRegistration()
-              } else {
-                setActiveView(tab.id)
-              }
-              if (tab.id !== 'register') {
-                setIsAgreed(false)
-              }
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
+        ].map((tab) => {
+          const isRegisterTab = tab.id === 'register';
+          // Chỉ xám và vô hiệu hóa khi ở ngoài trang đăng ký VÀ chưa có kết quả tính phí
+          const isInactiveRegister = isRegisterTab && activeView !== 'register' && !feeResult;
+
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              disabled={isInactiveRegister}
+              className={`header-action ${activeView === tab.id ? 'is-active' : ''} ${isInactiveRegister ? 'is-inactive-register' : ''}`}
+              onClick={() => {
+                if (tab.id === 'register') {
+                  openRegistration()
+                } else {
+                  setActiveView(tab.id)
+                }
+                if (tab.id !== 'register') {
+                  setIsAgreed(false)
+                }
+              }}
+            >
+              {tab.label}
+            </button>
+          )
+        })}
 
         <a
           href="https://www.appa.org.vn/"
@@ -528,7 +535,7 @@ function App() {
               <h1>Biểu phí theo Nghị định 17/2023/NĐ-CP</h1>
               <p>Mức lương cơ sở: 2.530.000 ₫</p>
               <div className="hero-math">
-                <span>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Hệ số điều chỉnh</span>
+                <span>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Tỷ lệ áp dụng khung giá</span>
               </div>
             </div>
           </section>
@@ -742,7 +749,7 @@ function App() {
                     </div>
                     <div className="fee-hero-sub" style={{ marginTop: '10px' }}>
                       <span>Số tiền gốc: {formatVnd(feeResult.baseAmount)}</span>
-                      <span>Khu vực áp dụng: {feeResult.region?.label} (Hệ số K = {feeResult.region?.multiplier})</span>
+                      <span>Khu vực áp dụng: {feeResult.region?.label}</span>
                       <span>Phí bản quyền trước thuế: {formatVnd(feeResult.annualFee)}</span>
                       <span>Thuế GTGT (8%): {formatVnd(feeResult.vat)}</span>
                       <span className="fee-total-final">Tổng chi phí thanh toán: {formatVnd(feeResult.totalWithVat)}</span>
