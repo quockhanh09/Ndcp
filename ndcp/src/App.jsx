@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import logo from './assets/Appa-cmc-nen-toi.png'
 import RegisterPage from './pages/RegisterPage'
@@ -223,6 +223,7 @@ function App() {
     room13: '',
   })
   const [feeResult, setFeeResult] = useState(null)
+  const registerSectionRef = useRef(null)
 
   const clearResult = () => setFeeResult(null)
 
@@ -239,6 +240,13 @@ function App() {
     setActiveView('register')
   }
 
+  // Cuộn tới phần đăng ký khi mở form đăng ký sử dụng ngay trên trang biểu mức
+  useEffect(() => {
+    if (isRegisterView) {
+      registerSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [isRegisterView])
+
   const handleCalculate = () => {
     let rows = []
     let totalA = 0
@@ -246,6 +254,9 @@ function App() {
     let annualFee = 0
     let safeArea = 0
     let hasValidInput = false
+
+    const k = activeRegion?.multiplier ?? 1
+    const kText = formatNumber(k, 2)
 
     if (isKaraoke) {
       rows = karaokeRoomRules.flatMap((rule) => {
@@ -262,7 +273,9 @@ function App() {
             range: 'Bậc 1-4 phòng',
             quantity: tier1Qty,
             contribution: tier1Qty * rule.coefficients[0],
-            formulaText: `${tier1Qty} x ${formatNumber(rule.coefficients[0], 2)} x ${formatNumber(baseSalary, 0)}`,
+            formulaText: k !== 1 
+              ? `${tier1Qty} x ${formatNumber(rule.coefficients[0], 2)} x ${formatNumber(baseSalary, 0)} x k(${kText})` 
+              : `${tier1Qty} x ${formatNumber(rule.coefficients[0], 2)} x ${formatNumber(baseSalary, 0)}`,
             unit: 'phòng',
           },
           {
@@ -270,7 +283,9 @@ function App() {
             range: 'Bậc 5-10 phòng',
             quantity: tier2Qty,
             contribution: tier2Qty * rule.coefficients[1],
-            formulaText: `${tier2Qty} x ${formatNumber(rule.coefficients[1], 2)} x ${formatNumber(baseSalary, 0)}`,
+            formulaText: k !== 1 
+              ? `${tier2Qty} x ${formatNumber(rule.coefficients[1], 2)} x ${formatNumber(baseSalary, 0)} x k(${kText})` 
+              : `${tier2Qty} x ${formatNumber(rule.coefficients[1], 2)} x ${formatNumber(baseSalary, 0)}`,
             unit: 'phòng',
           },
           {
@@ -278,7 +293,9 @@ function App() {
             range: 'Bậc >10 phòng',
             quantity: tier3Qty,
             contribution: tier3Qty * rule.coefficients[2],
-            formulaText: `${tier3Qty} x ${formatNumber(rule.coefficients[2], 2)} x ${formatNumber(baseSalary, 0)}`,
+            formulaText: k !== 1 
+              ? `${tier3Qty} x ${formatNumber(rule.coefficients[2], 2)} x ${formatNumber(baseSalary, 0)} x k(${kText})` 
+              : `${tier3Qty} x ${formatNumber(rule.coefficients[2], 2)} x ${formatNumber(baseSalary, 0)}`,
             unit: 'phòng',
           },
         ].filter(r => r.quantity > 0)
@@ -293,14 +310,16 @@ function App() {
           range: 'Box karaoke',
           quantity: boxQuantity,
           contribution: boxQuantity * karaokeBoxRule.fixed,
-          formulaText: `${boxQuantity} x ${formatNumber(karaokeBoxRule.fixed, 2)} x ${formatNumber(baseSalary, 0)}`,
+          formulaText: k !== 1 
+            ? `${boxQuantity} x ${formatNumber(karaokeBoxRule.fixed, 2)} x ${formatNumber(baseSalary, 0)} x k(${kText})` 
+            : `${boxQuantity} x ${formatNumber(karaokeBoxRule.fixed, 2)} x ${formatNumber(baseSalary, 0)}`,
           unit: 'box',
         })
       }
 
       hasValidInput = rows.length > 0
       totalA = rows.reduce((sum, row) => sum + row.contribution, 0)
-      annualFee = totalA * baseSalary * (activeRegion?.multiplier ?? 1)
+      annualFee = totalA * baseSalary * k
     } else if (isHotel) {
       rows = hotelRules.map((rule) => {
         const countRaw = Number.parseInt(hotelCounts[rule.key], 10)
@@ -312,14 +331,16 @@ function App() {
           range: 'Theo số lượng phòng',
           quantity,
           contribution,
-          formulaText: `${quantity} x ${formatNumber(rule.rate, 2)} x ${formatNumber(baseSalary, 0)}`,
+          formulaText: k !== 1 
+            ? `${quantity} x ${formatNumber(rule.rate, 2)} x ${formatNumber(baseSalary, 0)} x k(${kText})` 
+            : `${quantity} x ${formatNumber(rule.rate, 2)} x ${formatNumber(baseSalary, 0)}`,
           unit: 'phòng',
         }
       }).filter(r => r.quantity > 0)
 
       hasValidInput = rows.length > 0
       totalA = rows.reduce((sum, row) => sum + row.contribution, 0)
-      annualFee = totalA * baseSalary * (activeRegion?.multiplier ?? 1)
+      annualFee = totalA * baseSalary * k
     } else {
       const parsedArea = Number.parseFloat(String(area).replace(',', '.'))
       safeArea = Number.isFinite(parsedArea) && parsedArea > 0 ? parsedArea : 0
@@ -400,10 +421,18 @@ function App() {
 
         if (tier.isFlatFirst) {
           contrib = qty > 0 ? tier.rate : 0
-          formula = qty > 0 ? `${formatNumber(tier.rate, 2)} x ${formatNumber(baseSalary, 0)}` : '0 ₫'
+          if (qty > 0) {
+            formula = k !== 1 
+              ? `${formatNumber(tier.rate, 2)} x ${formatNumber(baseSalary, 0)} x k(${kText})` 
+              : `${formatNumber(tier.rate, 2)} x ${formatNumber(baseSalary, 0)}`
+          } else {
+            formula = '0 ₫'
+          }
         } else {
           contrib = qty * tier.rate
-          formula = `${formatNumber(qty, 0)} x ${formatNumber(tier.rate, 4)} x ${formatNumber(baseSalary, 0)}`
+          formula = k !== 1 
+            ? `${formatNumber(qty, 0)} x ${formatNumber(tier.rate, 4)} x ${formatNumber(baseSalary, 0)} x k(${kText})` 
+            : `${formatNumber(qty, 0)} x ${formatNumber(tier.rate, 4)} x ${formatNumber(baseSalary, 0)}`
         }
 
         return {
@@ -418,7 +447,7 @@ function App() {
 
       rawTotalA = rows.reduce((sum, r) => sum + r.contribution, 0)
       totalA = Math.min(rawTotalA, cap)
-      annualFee = totalA * baseSalary * (activeRegion?.multiplier ?? 1)
+      annualFee = totalA * baseSalary * k
     }
 
     if (!hasValidInput) {
@@ -445,7 +474,7 @@ function App() {
   }
 
   return (
-    <main className={`page-shell ${isRegisterView ? 'register-mode' : ''}`}>
+    <main className="page-shell">
       <header className="app-header-bar" aria-label="Header điều hướng">
         <div className="app-brand" aria-label="Logo Appa CMC">
           <img src={logo} alt="Logo Appa CMC" className="app-brand-logo" />
@@ -454,10 +483,9 @@ function App() {
         {[
           { id: 'fee', label: 'Biểu mức theo quy định' },
           { id: 'register', label: 'Đăng ký sử dụng' },
-          { id: 'lookup', label: 'Tra cứu đăng ký' },
+          // { id: 'lookup', label: 'Tra cứu đăng ký' },
         ].map((tab) => {
           const isRegisterTab = tab.id === 'register';
-          // Chỉ xám và vô hiệu hóa khi ở ngoài trang đăng ký VÀ chưa có kết quả tính phí
           const isInactiveRegister = isRegisterTab && activeView !== 'register' && !feeResult;
 
           return (
@@ -493,64 +521,30 @@ function App() {
         </a>
       </header>
 
-      {isRegisterView ? (
-        <RegisterPage
-          businessTypes={businessTypes}
-          selectedType={selectedType}
-          setSelectedType={setSelectedType}
-          currentBusinessType={currentBusinessType}
-          selectedCity={selectedCity}
-          selectedWard={selectedWard}
-          setSelectedCity={setSelectedCity}
-          setSelectedWard={setSelectedWard}
-          storeCity={storeCity}
-          storeWard={storeWard}
-          setStoreCity={setStoreCity}
-          setStoreWard={setStoreWard}
-          area={area}
-          setArea={setArea}
-          selectedPaymentCycle={selectedPaymentCycle}
-          setSelectedPaymentCycle={setSelectedPaymentCycle}
-          isAgreed={isAgreed}
-          setIsAgreed={setIsAgreed}
-          clearResult={clearResult}
-          cities={cities}
-          getWardsByCity={getWardsByCity}
-          paymentCycles={paymentCycles}
-          karaokeRoomRules={karaokeRoomRules}
-          karaokeBoxRule={karaokeBoxRule}
-          karaokeCounts={karaokeCounts}
-          setKaraokeCounts={setKaraokeCounts}
-          karaokeSubType={karaokeSubType}
-          setKaraokeSubType={setKaraokeSubType}
-          feeResult={feeResult}
-        />
-      ) : (
-        <>
-          <section className="hero-card">
-            <div className="hero-icon" aria-hidden="true">
-              <DocumentIcon />
-            </div>
-            <div className="hero-copy">
-              <h1>Biểu phí theo Nghị định 17/2023/NĐ-CP</h1>
-              <p>Mức lương cơ sở: 2.530.000 ₫</p>
-              <div className="hero-math">
-                <span>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Tỷ lệ áp dụng khung giá</span>
-              </div>
-            </div>
-          </section>
+      <section className="hero-card">
+        <div className="hero-icon" aria-hidden="true">
+          <DocumentIcon />
+        </div>
+        <div className="hero-copy">
+          <h1>Biểu phí theo Nghị định 17/2023/NĐ-CP</h1>
+          <p>Mức lương cơ sở: 2.530.000 ₫</p>
+          <div className="hero-math">
+            <span>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Tỷ lệ áp dụng khung giá × k</span>
+          </div>
+        </div>
+      </section>
 
-          <section className="section-card chooser-card">
-            <div className="section-head with-step">
-              <span className="step-badge">1</span>
-              <h2>Chọn loại hình cơ sở kinh doanh</h2>
-            </div>
+      <section className="section-card chooser-card">
+        <div className="section-head with-step">
+          <span className="step-badge">1</span>
+          <h2>Chọn loại hình cơ sở kinh doanh</h2>
+        </div>
 
-            <div className="business-grid" role="list" aria-label="Danh sách loại hình kinh doanh">
-              {businessTypes.map((item) => {
-                const active = item.id === selectedType
+        <div className="business-grid" role="list" aria-label="Danh sách loại hình kinh doanh">
+          {businessTypes.map((item) => {
+            const active = item.id === selectedType
 
-                return (
+            return (
                   <button
                     key={item.id}
                     type="button"
@@ -558,256 +552,289 @@ function App() {
                     onClick={() => {
                       setSelectedType(item.id)
                       clearResult()
+                      setIsAgreed(false)
                     }}
                   >
-                    <span className="business-badge" aria-hidden="true">
-                      <item.icon />
+                <span className="business-badge" aria-hidden="true">
+                  <item.icon />
+                </span>
+                <span>{item.label}</span>
+              </button>
+            )
+          })}
+        </div>
+      </section>
+
+      <section className="section-card form-card">
+        <div className="section-head with-step">
+          <span className="step-badge">2</span>
+          <h2>Nhập thông tin và tính phí</h2>
+        </div>
+
+        <div className="form-layout">
+          <div className="field-group">
+            <label className="field">
+              <span>Tỉnh / Thành phố</span>
+              <select
+                value={selectedCity}
+                onChange={(event) => {
+                  const cityId = event.target.value
+                  setSelectedCity(cityId)
+                  setSelectedWard(getWardsByCity(cityId)[0]?.id ?? '')
+                  clearResult()
+                }}
+              >
+                <option value="" disabled hidden>Chọn tỉnh/thành phố</option>
+                {cities.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {city.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="field">
+              <span>Phường / Xã / Thị trấn</span>
+              <select
+                value={selectedWard}
+                onChange={(event) => {
+                  setSelectedWard(event.target.value)
+                  clearResult()
+                }}
+              >
+                <option value="" disabled hidden>Chọn phường/xã</option>
+                {getWardsByCity(selectedCity).map((ward) => (
+                  <option key={ward.id} value={ward.id}>
+                    {ward.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="field">
+              <span>Phân loại đô thị</span>
+              <input
+                type="text"
+                readOnly
+                value={activeRegion?.label ?? 'Chưa xác định'}
+                className="readonly-field"
+              />
+            </label>
+
+            {isKaraoke ? (
+              <div className="karaoke-grid">
+                <p className="room-group-title">Số lượng phòng</p>
+                {karaokeRoomRules.map((rule) => (
+                  <label className="field karaoke-field" key={rule.key}>
+                    <span>
+                      {rule.label} <em className="karaoke-hint">{rule.hint}</em>
                     </span>
-                    <span>{item.label}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </section>
-
-          <section className="section-card form-card">
-            <div className="section-head with-step">
-              <span className="step-badge">2</span>
-              <h2>Nhập thông tin và tính phí</h2>
-            </div>
-
-            <div className="form-layout">
-              <div className="field-group">
-                <label className="field">
-                  <span>Tỉnh / Thành phố</span>
-                  <select
-                    value={selectedCity}
-                    onChange={(event) => {
-                      const cityId = event.target.value
-                      setSelectedCity(cityId)
-                      setSelectedWard(getWardsByCity(cityId)[0]?.id ?? '')
-                      clearResult()
-                    }}
-                  >
-                    <option value="" disabled hidden>Chọn tỉnh/thành phố</option>
-                    {cities.map((city) => (
-                      <option key={city.id} value={city.id}>
-                        {city.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="field">
-                  <span>Phường / Xã / Thị trấn</span>
-                  <select
-                    value={selectedWard}
-                    onChange={(event) => {
-                      setSelectedWard(event.target.value)
-                      clearResult()
-                    }}
-                  >
-                    <option value="" disabled hidden>Chọn phường/xã</option>
-                    {getWardsByCity(selectedCity).map((ward) => (
-                      <option key={ward.id} value={ward.id}>
-                        {ward.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="field">
-                  <span>Phân loại đô thị</span>
-                  <input
-                    type="text"
-                    readOnly
-                    value={activeRegion?.label ?? 'Chưa xác định'}
-                    className="readonly-field"
-                  />
-                </label>
-
-                {isKaraoke ? (
-                  <div className="karaoke-grid">
-                    <p className="room-group-title">Số lượng phòng</p>
-                    {karaokeRoomRules.map((rule) => (
-                      <label className="field karaoke-field" key={rule.key}>
-                        <span>
-                          {rule.label} <em className="karaoke-hint">{rule.hint}</em>
-                        </span>
-                        <input
-                          type="number"
-                          min="0"
-                          step="1"
-                          value={karaokeCounts[rule.key]}
-                          onFocus={clearResult}
-                          onChange={(event) =>
-                            setKaraokeCounts((prev) => ({
-                              ...prev,
-                              [rule.key]: event.target.value,
-                            }))
-                          }
-                          placeholder="Nhập số phòng"
-                        />
-                      </label>
-                    ))}
-                    <label className="field karaoke-field" key={karaokeBoxRule.key}>
-                      <span>
-                        {karaokeBoxRule.label} <em className="karaoke-hint">{karaokeBoxRule.hint}</em>
-                      </span>
-                      <input
-                        type="number"
-                        min="0"
-                        step="1"
-                        value={karaokeCounts[karaokeBoxRule.key]}
-                        onFocus={clearResult}
-                        onChange={(event) =>
-                          setKaraokeCounts((prev) => ({
-                            ...prev,
-                            [karaokeBoxRule.key]: event.target.value,
-                          }))
-                        }
-                        placeholder="Nhập số box"
-                      />
-                    </label>
-                  </div>
-                ) : isHotel ? (
-                  <div className="karaoke-grid hotel-grid">
-                    <p className="room-group-title">Số lượng phòng</p>
-                    {hotelRules.map((rule) => (
-                      <label className="field karaoke-field" key={rule.key}>
-                        <span>
-                          {rule.label} <em className="karaoke-hint">{rule.hint}</em>
-                        </span>
-                        <input
-                          type="number"
-                          min="0"
-                          step="1"
-                          value={hotelCounts[rule.key]}
-                          onFocus={clearResult}
-                          onChange={(event) =>
-                            setHotelCounts((prev) => ({
-                              ...prev,
-                              [rule.key]: event.target.value,
-                            }))
-                          }
-                          placeholder="Nhập số phòng"
-                        />
-                      </label>
-                    ))}
-                    <p className="karaoke-hint" style={{ gridColumn: '1 / -1' }}>
-                      * Dịch vụ khác trong khách sạn (nhà hàng, bar, karaoke, spa, khu vui chơi...) áp dụng theo biểu phí riêng tương ứng.
-                    </p>
-                  </div>
-                ) : (
-                  <label className="field">
-                    <span>Diện tích (m²)</span>
                     <input
-                      type="text"
-                      value={area}
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={karaokeCounts[rule.key]}
                       onFocus={clearResult}
-                      onChange={(event) => {
-                        setArea(event.target.value)
-                        clearResult()
-                      }}
-                      placeholder="VD: 70"
+                      onChange={(event) =>
+                        setKaraokeCounts((prev) => ({
+                          ...prev,
+                          [rule.key]: event.target.value,
+                        }))
+                      }
+                      placeholder="Nhập số phòng"
                     />
                   </label>
-                )}
+                ))}
+                <label className="field karaoke-field" key={karaokeBoxRule.key}>
+                  <span>
+                    {karaokeBoxRule.label} <em className="karaoke-hint">{karaokeBoxRule.hint}</em>
+                  </span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={karaokeCounts[karaokeBoxRule.key]}
+                    onFocus={clearResult}
+                    onChange={(event) =>
+                      setKaraokeCounts((prev) => ({
+                        ...prev,
+                        [karaokeBoxRule.key]: event.target.value,
+                      }))
+                    }
+                    placeholder="Nhập số box"
+                  />
+                </label>
+              </div>
+            ) : isHotel ? (
+              <div className="karaoke-grid hotel-grid">
+                <p className="room-group-title">Số lượng phòng</p>
+                {hotelRules.map((rule) => (
+                  <label className="field karaoke-field" key={rule.key}>
+                    <span>
+                      {rule.label} <em className="karaoke-hint">{rule.hint}</em>
+                    </span>
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={hotelCounts[rule.key]}
+                      onFocus={clearResult}
+                      onChange={(event) =>
+                        setHotelCounts((prev) => ({
+                          ...prev,
+                          [rule.key]: event.target.value,
+                        }))
+                      }
+                      placeholder="Nhập số phòng"
+                    />
+                  </label>
+                ))}
+                <p className="karaoke-hint" style={{ gridColumn: '1 / -1' }}>
+                  * Dịch vụ khác trong khách sạn (nhà hàng, bar, karaoke, spa, khu vui chơi...) áp dụng theo biểu phí riêng tương ứng.
+                </p>
+              </div>
+            ) : (
+              <label className="field">
+                <span>Diện tích (m²)</span>
+                <input
+                  type="text"
+                  value={area}
+                  onFocus={clearResult}
+                  onChange={(event) => {
+                    setArea(event.target.value)
+                    clearResult()
+                  }}
+                  placeholder="VD: 70"
+                />
+              </label>
+            )}
 
-                <button type="button" className="primary-action" onClick={handleCalculate}>
-                  Tính phí bản quyền
-                </button>
+            <button type="button" className="primary-action" onClick={handleCalculate}>
+              Tính phí bản quyền
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {feeResult ? (
+        <section className="fee-result-stack" aria-live="polite">
+          <article className="fee-summary-card">
+            <div className="fee-summary-body">
+              <div className="fee-hero">
+                <div className="fee-hero-top" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <p>Phí bản quyền năm (theo NĐ 17/2023)</p>
+                  <button
+                    type="button"
+                    className="fee-register-cta"
+                    onClick={openRegistration}
+                    style={{
+                      backgroundColor: '#22c55e',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '8px 18px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)',
+                      transition: 'background 0.2s ease',
+                    }}
+                  >
+                    Đăng ký sử dụng
+                  </button>
+                </div>
+                <div className="fee-hero-sub" style={{ marginTop: '10px' }}>
+                  <span>Số tiền gốc: {formatVnd(feeResult.baseAmount)}</span>
+                  <span>Khu vực áp dụng: {feeResult.region?.label} (k = hệ số theo đô thị: {formatNumber(feeResult.region?.multiplier ?? 1, 2)})</span>
+                  <span>Phí bản quyền trước thuế: {formatVnd(feeResult.annualFee)}</span>
+                  <span>Thuế GTGT (8%): {formatVnd(feeResult.vat)}</span>
+                  <span className="fee-total-final">Tổng chi phí thanh toán: {formatVnd(feeResult.totalWithVat)}</span>
+                </div>
+              </div>
+
+              <div className="fee-detail-card">
+                {feeResult.capMultiplier ? (
+                  <>
+                    <h4>
+                      Mức trần phí tối đa/năm: {feeResult.capMultiplier} x {formatNumber(baseSalary, 0)} ={' '}
+                      <span style={{ color: '#ffea00' }}>
+                        {formatVnd(feeResult.capMultiplier * baseSalary)}
+                      </span>
+                    </h4>
+                    {feeResult.rawTotalA >= feeResult.capMultiplier && (
+                      <p style={{ marginTop: '4px', fontSize: '13px', color: '#ff6b6b', fontWeight: 'bold' }}>
+                        ⚠️ Cơ sở kinh doanh đã chạm mức bản quyền tối đa trong năm!
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <h4>Chi tiết tính toán phí bản quyền</h4>
+                )}
+              </div>
+
+              <div className="fee-table-card">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>HẠNG MỤC / BẬC</th>
+                      <th>DIỆN TÍCH / SL</th>
+                      <th>CÔNG THỨC TÍNH</th>
+                      <th>THÀNH TIỀN</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {feeResult.rows.map((row, idx) => (
+                      <tr key={idx}>
+                        <td><strong>{row.label}</strong> <br /><small style={{ opacity: 0.7 }}>{row.range}</small></td>
+                        <td>{formatNumber(row.quantity, 0)} {row.unit}</td>
+                        <td>{row.formulaText}</td>
+                        <td><strong>{formatVnd(row.contribution * baseSalary * (feeResult.region?.multiplier ?? 1))}</strong></td>
+                      </tr>
+                    ))}
+                    <tr className="total-row">
+                      <td colSpan={3}>Tổng cộng (Chưa thuế VAT)</td>
+                      <td><strong>{formatVnd(feeResult.annualFee)}</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-          </section>
+          </article>
+        </section>
+      ) : null}
 
-          {feeResult ? (
-            <section className="fee-result-stack" aria-live="polite">
-              <article className="fee-summary-card">
-                <div className="fee-summary-body">
-                  <div className="fee-hero">
-                    <div className="fee-hero-top" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <p>Phí bản quyền năm (theo NĐ 17/2023)</p>
-                      <button
-                        type="button"
-                        className="fee-register-cta"
-                        onClick={openRegistration}
-                        style={{
-                          backgroundColor: '#22c55e',
-                          color: '#ffffff',
-                          border: 'none',
-                          borderRadius: '8px',
-                          padding: '8px 18px',
-                          fontWeight: 'bold',
-                          cursor: 'pointer',
-                          boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)',
-                          transition: 'background 0.2s ease',
-                        }}
-                      >
-                        Đăng ký sử dụng
-                      </button>
-                    </div>
-                    <div className="fee-hero-sub" style={{ marginTop: '10px' }}>
-                      <span>Số tiền gốc: {formatVnd(feeResult.baseAmount)}</span>
-                      <span>Khu vực áp dụng: {feeResult.region?.label}</span>
-                      <span>Phí bản quyền trước thuế: {formatVnd(feeResult.annualFee)}</span>
-                      <span>Thuế GTGT (8%): {formatVnd(feeResult.vat)}</span>
-                      <span className="fee-total-final">Tổng chi phí thanh toán: {formatVnd(feeResult.totalWithVat)}</span>
-                    </div>
-                  </div>
-
-                  <div className="fee-detail-card">
-                    {feeResult.capMultiplier ? (
-                      <>
-                        <h4>
-                          Mức trần phí tối đa/năm: {feeResult.capMultiplier} x {formatNumber(baseSalary, 0)} ={' '}
-                          <span style={{ color: '#ffea00' }}>
-                            {formatVnd(feeResult.capMultiplier * baseSalary)}
-                          </span>
-                        </h4>
-                        {feeResult.rawTotalA >= feeResult.capMultiplier && (
-                          <p style={{ marginTop: '4px', fontSize: '13px', color: '#ff6b6b', fontWeight: 'bold' }}>
-                            ⚠️ Cơ sở kinh doanh đã chạm mức bản quyền tối đa trong năm!
-                          </p>
-                        )}
-                      </>
-                    ) : (
-                      <h4>Chi tiết tính toán phí bản quyền</h4>
-                    )}
-                  </div>
-
-                  <div className="fee-table-card">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>HẠNG MỤC / BẬC</th>
-                          <th>DIỆN TÍCH / SL</th>
-                          <th>CÔNG THỨC TÍNH</th>
-                          <th>THÀNH TIỀN</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {feeResult.rows.map((row, idx) => (
-                          <tr key={idx}>
-                            <td><strong>{row.label}</strong> <br /><small style={{ opacity: 0.7 }}>{row.range}</small></td>
-                            <td>{formatNumber(row.quantity, 0)} {row.unit}</td>
-                            <td>{row.formulaText}</td>
-                            <td><strong>{formatVnd(row.contribution * baseSalary * (feeResult.region?.multiplier ?? 1))}</strong></td>
-                          </tr>
-                        ))}
-                        <tr className="total-row">
-                          <td colSpan={3}>Tổng cộng (Chưa thuế VAT)</td>
-                          <td><strong>{formatVnd(feeResult.annualFee)}</strong></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </article>
-            </section>
-          ) : null}
-        </>
-      )}
+      <div ref={registerSectionRef}>
+        {isRegisterView ? (
+          <RegisterPage
+            selectedType={selectedType}
+            currentBusinessType={currentBusinessType}
+            selectedCity={selectedCity}
+            selectedWard={selectedWard}
+            setSelectedCity={setSelectedCity}
+            setSelectedWard={setSelectedWard}
+            storeCity={storeCity}
+            storeWard={storeWard}
+            setStoreCity={setStoreCity}
+            setStoreWard={setStoreWard}
+            area={area}
+            setArea={setArea}
+            selectedPaymentCycle={selectedPaymentCycle}
+            setSelectedPaymentCycle={setSelectedPaymentCycle}
+            isAgreed={isAgreed}
+            setIsAgreed={setIsAgreed}
+            clearResult={clearResult}
+            cities={cities}
+            getWardsByCity={getWardsByCity}
+            paymentCycles={paymentCycles}
+            karaokeRoomRules={karaokeRoomRules}
+            karaokeBoxRule={karaokeBoxRule}
+            karaokeCounts={karaokeCounts}
+            setKaraokeCounts={setKaraokeCounts}
+            karaokeSubType={karaokeSubType}
+            setKaraokeSubType={setKaraokeSubType}
+            feeResult={feeResult}
+          />
+        ) : null}
+      </div>
 
       <footer className="app-footer" aria-label="Thông tin liên hệ APPA-CMC">
         <div className="app-footer-inner">

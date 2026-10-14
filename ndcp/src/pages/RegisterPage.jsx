@@ -48,9 +48,7 @@ function getNextDailyOrderNumber(date) {
 }
 
 function RegisterPage({
-  businessTypes,
   selectedType,
-  setSelectedType,
   currentBusinessType,
   selectedCity,
   selectedWard,
@@ -252,78 +250,8 @@ function RegisterPage({
     setHasReadConsent(false)
   }
 
-  const resetConsent = () => {
-    setIsAgreed(false)
-    setIsConsentModalOpen(false)
-    setHasReadConsent(false)
-    setModalConsentChecked(false)
-  }
-
   return (
     <div className="register-page-shell">
-      <section className="section-card chooser-card">
-        <div className="section-head with-step">
-          <span className="step-badge">1</span>
-          <h2>Chọn loại hình cơ sở kinh doanh</h2>
-        </div>
-
-        <div className="business-grid" role="list" aria-label="Danh sách loại hình kinh doanh">
-          {businessTypes.map((item) => {
-            const active = item.id === selectedType
-
-            return (
-              <button
-                key={item.id}
-                type="button"
-                className={`business-card ${active ? 'is-active' : ''}`}
-                onClick={() => {
-                  setSelectedType(item.id)
-                  clearResult()
-                  resetConsent()
-                }}
-              >
-                <span className="business-badge" aria-hidden="true">
-                  <item.icon />
-                </span>
-                <span>{item.label}</span>
-              </button>
-            )
-          })}
-        </div>
-      </section>
-
-      <section className="register-panel-card">
-        <div className="register-section">
-          <div className="register-section-head">
-            <span className="register-step-number">01</span>
-            <h3>LOẠI HÌNH KINH DOANH</h3>
-          </div>
-
-          <div className="register-input-wrap">
-            <span className="register-field-label">Loại hình kinh doanh đã chọn</span>
-
-            {selectedType === 'karaoke' ? (
-              <div className="register-karaoke-select-box">
-                <select
-                  value={karaokeSubType}
-                  onChange={(event) => {
-                    setKaraokeSubType(event.target.value)
-                    clearResult()
-                  }}
-                >
-                  <option value="room">Cơ sở kinh doanh dv karaoke phòng</option>
-                  <option value="box">Cơ sở kinh doanh dv karaoke box</option>
-                </select>
-              </div>
-            ) : (
-              <div className="register-select-box">
-                <span>{currentBusinessType?.label}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
       <section className="register-panel-card">
         <div className="register-section">
           <div className="register-section-head">
@@ -493,6 +421,24 @@ function RegisterPage({
             <h3>THÔNG TIN CƠ SỞ KINH DOANH</h3>
           </div>
           <p className="business-sub-desc">Vui lòng cung cấp đầy đủ và chính xác các thông tin theo yêu cầu dưới đây.</p>
+
+          {selectedType === 'karaoke' && (
+            <div className="register-input-wrap">
+              <span className="register-field-label">Loại hình kinh doanh đã chọn</span>
+              <div className="register-karaoke-select-box">
+                <select
+                  value={karaokeSubType}
+                  onChange={(event) => {
+                    setKaraokeSubType(event.target.value)
+                    clearResult()
+                  }}
+                >
+                  <option value="room">Cơ sở kinh doanh dv karaoke phòng</option>
+                  <option value="box">Cơ sở kinh doanh dv karaoke box</option>
+                </select>
+              </div>
+            </div>
+          )}
 
           <div className="business-form-container">
             {selectedType === 'karaoke' && karaokeSubType === 'room' ? (
