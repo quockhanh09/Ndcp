@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import checkCircle from '../assets/Check-circle.png'
+import FeeResultCard from '../components/FeeResultCard'
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzD7AVwQoWvYkUyzHGVM9XFqvwAm8cX5C_kkn_MExe7u_S0EE-H7xsYJvw6JLrBB5ks/exec";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'
@@ -19,10 +20,6 @@ const businessTypeAbbreviations = {
 const karaokeSubTypeAbbreviations = {
   room: 'KRP',
   box: 'KRB',
-}
-
-function formatVnd(value) {
-  return `${new Intl.NumberFormat('vi-VN').format(Math.round(value))} ₫`
 }
 
 function formatRegistrationTime(date) {
@@ -64,7 +61,6 @@ function RegisterPage({
   setSelectedPaymentCycle,
   isAgreed,
   setIsAgreed,
-  clearResult,
   cities,
   getWardsByCity,
   paymentCycles,
@@ -74,6 +70,12 @@ function RegisterPage({
   setKaraokeCounts,
   karaokeSubType,
   setKaraokeSubType,
+  karaokeBoxCount,
+  setKaraokeBoxCount,
+  hotelStar,
+  setHotelStar,
+  hotelRooms,
+  setHotelRooms,
   feeResult,
 }) {
   const [isConsentModalOpen, setIsConsentModalOpen] = useState(false)
@@ -96,9 +98,6 @@ function RegisterPage({
   
   const [storeName, setStoreName] = useState('')
   const [storeStreet, setStoreStreet] = useState('')
-  const [hotelStar, setHotelStar] = useState('')
-  const [hotelRooms, setHotelRooms] = useState('')
-  const [karaokeBoxCount, setKaraokeBoxCount] = useState('')
 
   const [registrationInfo, setRegistrationInfo] = useState(null)
   const consentTermsRef = useRef(null)
@@ -428,10 +427,7 @@ function RegisterPage({
               <div className="register-karaoke-select-box">
                 <select
                   value={karaokeSubType}
-                  onChange={(event) => {
-                    setKaraokeSubType(event.target.value)
-                    clearResult()
-                  }}
+                  onChange={(event) => setKaraokeSubType(event.target.value)}
                 >
                   <option value="room">Cơ sở kinh doanh dv karaoke phòng</option>
                   <option value="box">Cơ sở kinh doanh dv karaoke box</option>
@@ -524,20 +520,6 @@ function RegisterPage({
                         </option>
                       ))}
                     </select>
-                  </div>
-                </div>
-
-                <div className="business-form-field full-width">
-                  <label className="business-form-label">
-                    Tổng chi phí thanh toán
-                  </label>
-                  <div className="business-input-wrapper">
-                    <input
-                      type="text"
-                      readOnly
-                      className="total-fee-field"
-                      value={feeResult ? formatVnd(feeResult.totalWithVat) : 'Chưa tính phí bản quyền'}
-                    />
                   </div>
                 </div>
 
@@ -675,20 +657,6 @@ function RegisterPage({
 
                 <div className="business-form-field full-width">
                   <label className="business-form-label">
-                    Tổng chi phí thanh toán
-                  </label>
-                  <div className="business-input-wrapper">
-                    <input
-                      type="text"
-                      readOnly
-                      className="total-fee-field"
-                      value={feeResult ? formatVnd(feeResult.totalWithVat) : 'Chưa tính phí bản quyền'}
-                    />
-                  </div>
-                </div>
-
-                <div className="business-form-field full-width">
-                  <label className="business-form-label">
                     Số karaoke box <span className="required-star">*</span>
                   </label>
                   <div className="business-input-wrapper">
@@ -784,20 +752,6 @@ function RegisterPage({
                         </option>
                       ))}
                     </select>
-                  </div>
-                </div>
-
-                <div className="business-form-field full-width">
-                  <label className="business-form-label">
-                    Tổng chi phí thanh toán
-                  </label>
-                  <div className="business-input-wrapper">
-                    <input
-                      type="text"
-                      readOnly
-                      className="total-fee-field"
-                      value={feeResult ? formatVnd(feeResult.totalWithVat) : 'Chưa tính phí bản quyền'}
-                    />
                   </div>
                 </div>
 
@@ -935,23 +889,11 @@ function RegisterPage({
                     </select>
                   </div>
                 </div>
-
-                <div className="business-form-field full-width">
-                  <label className="business-form-label">
-                    Tổng chi phí thanh toán
-                  </label>
-                  <div className="business-input-wrapper">
-                    <input
-                      type="text"
-                      readOnly
-                      className="total-fee-field"
-                      value={feeResult ? formatVnd(feeResult.totalWithVat) : 'Chưa tính phí bản quyền'}
-                    />
-                  </div>
-                </div>
               </div>
             )}
           </div>
+
+          {feeResult ? <FeeResultCard feeResult={feeResult} /> : null}
 
           <div className="business-commitment-container">
             <label className="business-checkbox-label" onClick={(e) => {
