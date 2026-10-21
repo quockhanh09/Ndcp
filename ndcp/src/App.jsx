@@ -829,7 +829,7 @@ function App() {
                   8.1. <strong>Sửa đổi, bổ sung:</strong> Trung tâm có quyền cập nhật, sửa đổi Điều khoản này khi cần thiết. Phiên bản áp dụng đối với Đơn vị sử dụng / Người đăng ký là phiên bản được hiển thị trên hệ thống tại thời điểm Đơn vị sử dụng / Người đăng ký nhấn chấp thuận và tạo đơn thành công.
                 </p>
                 <p className="terms-paragraph">
-                  8.2. <strong>Giá trị giao kết:</strong> Việc Đơn vị sử dụng / Người đăng ký đánh dấu (check) vào ô chấp thuận và tiếp tục quy trình kê khai/đăng ký được xác nhận là đã giao kết, hiểu rõ và hoàn toàn đồng ý ràng buộc bởi toàn bộ nội dung của Điều khoản và Cam kết này.
+                  8.2. <strong>Giá trị giao kết:</strong> Việc Đơn vị sử dụng / Người đăng ký đánh dấu (check) vào ô chấp thuận và tiếp tục quy trình kê khai/đăng ký được xác nhận là đã hiểu rõ và hoàn toàn đồng ý với toàn bộ nội dung của Điều khoản sử dụng và cam kết thực hiện các nghĩa vụ quy định tại Điều khoản này. Việc đồng ý này bao gồm cung cấp các thông tin về kỹ thuật cần thiết để làm bằng chứng chấp thuận Điều khoản, bao gồm nhưng không giới hạn ở địa chỉ IP, User-Agent, thời gian chính xác, vị trí, tọa độ, thiết bị.
                 </p>
               </div>
             </div>
