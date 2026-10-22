@@ -994,7 +994,7 @@ function RegisterPage({
 
                 <h4 className="terms-section-title">ĐIỀU 1: ĐỊNH NGHĨA VÀ PHẠM VI ÁP DỤNG</h4>
                 <p className="terms-paragraph">
-                  1.1. <strong>"Trung tâm" / "APPA-CMC":</strong> Trung tâm Khai thác Quyền biểu diễn Âm nhạc Việt Nam, tổ chức đại diện tập thể quyền liên quan trực thuộc Hội Bảo vệ quyền của nghệ sĩ biểu diễn âm nhạc Việt Nam (thành lập theo quyết định số 1813/QĐ-BNV ngày 01 tháng 12 năm 2015)
+                  1.1. <strong>"Trung tâm" / "APPA-CMC":</strong> Trung tâm Khai thác Quyền biểu diễn Âm nhạc Việt Nam, tổ chức đại diện tập thể quyền liên quan trực thuộc Hội Bảo vệ quyền của nghệ sĩ biểu diễn âm nhạc Việt Nam (thành lập theo quyết định số 1813/QĐ-BNV ngày 01 tháng 12 năm 2015).
                 </p>
                 <p className="terms-paragraph">
                   1.2. <strong>"Đơn vị sử dụng" / "Người đăng ký" / "Khách hàng":</strong> Tổ chức, cá nhân, hộ kinh doanh thực hiện đăng ký, kê khai thông tin và sử dụng dịch vụ cấp phép quyền liên quan qua hệ thống của Trung tâm.
@@ -1017,7 +1017,7 @@ function RegisterPage({
                   2.1. <strong>Phạm vi cấp phép:</strong> Giấy chứng nhận do Trung tâm cấp chỉ bao gồm Quyền liên quan của người biểu diễn âm nhạc đối với các bản ghi được công bố và đã được ủy quyền cho Trung tâm, và các bản ghi Trung tâm đại diện thu thay chủ sở hữu quyền liên quan.
                 </p>
                 <p className="terms-paragraph">
-                  2.2. <strong>Không bao gồm Quyền tác giả:</strong> Giấy chứng nhận này KHÔNG BAO GỒM QUYỀN TÁC GIẢ (quyền đối với tác phẩm âm nhạc — giai điệu, lời) và KHÔNG BAO GỒM QUYỀN BẢN GHI. Quyền tác giả do Trung tâm Bảo vệ Quyền tác giả Âm nhạc Việt Nam (VCPMC) đại diện quản lý. Quyền bản ghi do Hiệp hội Công nghiệp Ghi âm Việt Nam (RIAV) đại diện quản lý
+                  2.2. <strong>Không bao gồm Quyền tác giả:</strong> Giấy chứng nhận này KHÔNG BAO GỒM QUYỀN TÁC GIẢ (quyền đối với tác phẩm âm nhạc — giai điệu, lời) và KHÔNG BAO GỒM QUYỀN BẢN GHI. Quyền tác giả do Trung tâm Bảo vệ Quyền tác giả Âm nhạc Việt Nam (VCPMC) đại diện quản lý. Quyền bản ghi do Hiệp hội Công nghiệp Ghi âm Việt Nam (RIAV) đại diện quản lý.
                 </p>
                 <p className="terms-paragraph">
                   2.3. <strong>Nghĩa vụ độc lập của Đơn vị sử dụng / Người đăng ký:</strong>
@@ -1038,7 +1038,7 @@ function RegisterPage({
                 <p className="terms-paragraph">
                   3.2. <strong>Cam kết tính chính xác và hợp pháp:</strong>
                   <br />- Đơn vị sử dụng / Người đăng ký cam kết toàn bộ thông tin, tài liệu và nội dung kê khai trong hồ sơ đăng ký là đầy đủ, chính xác, trung thực và hợp pháp.
-                  <br />- Thông tin kê khai bao gồm nhưng không giới hạn: loại hình kinh doanh, diện tích, số phòng, số ghế, số kênh, số lượt hành khách, quy mô sự kiện và các thông số dùng để định giá.
+                  <br />- Thông tin kê khai bao gồm nhưng không giới hạn: loại hình kinh doanh, diện tích, số phòng, số ghế, số kênh, số lượt hành khách, quy mô sự kiện, danh sách bản ghi sử dụng và các thông số dùng để định giá.
                   <br />- Mức phí cấp phép được hệ thống tính tự động theo công thức quy định tại Nghị định 17/2023/NĐ-CP và biểu giá của Trung tâm dựa trên thông tin Đơn vị sử dụng / Người đăng ký đã tự cung cấp.
                 </p>
                 <p className="terms-paragraph">
@@ -1060,7 +1060,7 @@ function RegisterPage({
                 <h4 className="terms-section-title">ĐIỀU 4: QUY TRÌNH ĐĂNG KÝ, THANH TOÁN VÀ CẤP PHÉP</h4>
                 <p className="terms-paragraph">
                   4.1. <strong>Quy trình 07 bước:</strong>
-                  <br />(1) Chọn loại hình cấp phép &rarr; (2) Kê khai thông tin pháp lý, địa điểm, liên hệ &rarr; (3) Chấp thuận Điều khoản sử dụng &rarr; (4) Trung tâm duyệt đăng ký và hướng dẫn thanh toán &rarr; (5) Đơn vị sử dụng thanh toán tiền bản quyền &rarr; (6) Trung tâm xác nhận thanh toán &rarr; (7) Cấp Giấy chứng nhận.
+                  <br />(1) Chọn loại hình cấp phép &rarr; (2) Kê khai thông tin pháp lý của đơn vị sử dụng &rarr; (3) Chấp thuận Điều khoản sử dụng &rarr; (4) Trung tâm duyệt đăng ký và hướng dẫn thanh toán &rarr; (5) Đơn vị sử dụng thanh toán tiền bản quyền &rarr; (6) Trung tâm xác nhận thanh toán &rarr; (7) Cấp Giấy chứng nhận.
                 </p>
                 <p className="terms-paragraph">
                   4.2. <strong>Thời hạn duyệt đăng ký:</strong> Sau khi tạo đơn, Trung tâm sẽ duyệt thông tin và gửi email kèm hướng dẫn thanh toán trong 72 giờ. Đơn vị đăng ký có thể tra cứu tình trạng xử lý hồ sơ trên trang đăng ký của Trung tâm.
@@ -1113,7 +1113,7 @@ function RegisterPage({
                   8.1. <strong>Sửa đổi, bổ sung:</strong> Trung tâm có quyền cập nhật, sửa đổi Điều khoản này khi cần thiết. Phiên bản áp dụng đối với Đơn vị sử dụng / Người đăng ký là phiên bản được hiển thị trên hệ thống tại thời điểm Đơn vị sử dụng / Người đăng ký nhấn chấp thuận và tạo đơn thành công.
                 </p>
                 <p className="terms-paragraph">
-                  8.2. <strong>Giá trị giao kết:</strong> Việc Đơn vị sử dụng / Người đăng ký đánh dấu (check) vào ô chấp thuận và tiếp tục quy trình kê khai/đăng ký được xác nhận là đã giao kết, hiểu rõ và hoàn toàn đồng ý ràng buộc bởi toàn bộ nội dung của Điều khoản và Cam kết này.
+                  8.2. <strong>Giá trị giao kết:</strong> Việc Đơn vị sử dụng / Người đăng ký đánh dấu (check) vào ô chấp thuận và tiếp tục quy trình kê khai/đăng ký được xác nhận là đã hiểu rõ và hoàn toàn đồng ý với toàn bộ nội dung của Điều khoản sử dụng và cam kết thực hiện các nghĩa vụ quy định tại Điều khoản này. Việc đồng ý này bao gồm cung cấp các thông tin về kỹ thuật cần thiết để làm bằng chứng chấp thuận Điều khoản, bao gồm nhưng không giới hạn ở địa chỉ IP, User-Agent, thời gian chính xác, vị trí, tọa độ, thiết bị.
                 </p>
               </div>
             </div>
