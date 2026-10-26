@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import logo from './assets/Appa-cmc-nen-toi.png'
 import RegisterPage from './pages/RegisterPage'
+import PerformancePage from './pages/PerformancePage'
 import { cities, getWardsByCity, getActiveRegion } from './data/vietnamLocations'
 
 function DocumentIcon() {
@@ -196,7 +197,7 @@ function calculateTierQuantity(area, min, max) {
 }
 
 function App() {
-  const [activeView, setActiveView] = useState('register')
+  const [activeView, setActiveView] = useState('performance')
   const [selectedType, setSelectedType] = useState(businessTypes[0].id)
 
   // Trụ sở doanh nghiệp
@@ -521,30 +522,35 @@ function App() {
           <img src={logo} alt="Logo Appa CMC" className="app-brand-logo" />
         </div>
 
-        {[
-          { id: 'register', label: 'Đăng ký sử dụng' },
-          { id: 'lookup', label: 'Tra cứu đăng ký' },
-        ].map((tab) => {
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              className={`header-action ${activeView === tab.id ? 'is-active' : ''}`}
-              onClick={() => {
-                if (tab.id === 'register') {
-                  openRegistration()
-                } else {
-                  setActiveView(tab.id)
-                }
-                if (tab.id !== 'register') {
-                  setIsAgreed(false)
-                }
-              }}
-            >
-              {tab.label}
-            </button>
-          )
-        })}
+        <nav className="app-nav-menu">
+          {[
+            { id: 'register', label: 'CƠ SỞ KINH DOANH' },
+            { id: 'performance', label: 'TỔ CHỨC BIỂU DIỄN' },
+            // { id: 'copy', label: 'ĐĂNG KÝ SAO CHÉP' },
+            // { id: 'lookup', label: 'TRA CỨU ĐĂNG KÝ' },
+          ].map((tab) => {
+            const isActive = activeView === tab.id
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                className={`header-action ${isActive ? 'is-active' : ''}`}
+                onClick={() => {
+                  if (tab.id === 'register') {
+                    openRegistration()
+                  } else {
+                    setActiveView(tab.id)
+                  }
+                  if (tab.id !== 'register') {
+                    setIsAgreed(false)
+                  }
+                }}
+              >
+                {tab.label}
+              </button>
+            )
+          })}
+        </nav>
 
         <a
           href="https://www.appa.org.vn/"
@@ -557,48 +563,52 @@ function App() {
         </a>
       </header>
 
-      <section className="hero-card">
-        <div className="hero-icon" aria-hidden="true">
-          <DocumentIcon />
-        </div>
-        <div className="hero-copy">
-          <h1>Biểu phí theo Nghị định 17/2023/NĐ-CP</h1>
-          <p>Mức lương cơ sở: 2.530.000 ₫</p>
-          <div className="hero-math">
-            <span>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Tỷ lệ áp dụng khung giá × k</span>
-          </div>
-        </div>
-      </section>
+      {activeView === 'register' && (
+        <>
+          <section className="hero-card">
+            <div className="hero-icon" aria-hidden="true">
+              <DocumentIcon />
+            </div>
+            <div className="hero-copy">
+              <h1>Biểu phí theo Nghị định 17/2023/NĐ-CP</h1>
+              <p>Mức lương cơ sở: 2.530.000 ₫</p>
+              <div className="hero-math">
+                <span>Số tiền bản quyền chi trả (tính theo năm) = Mức lương cơ sở × Tỷ lệ áp dụng khung giá × k</span>
+              </div>
+            </div>
+          </section>
 
-      <section className="section-card chooser-card">
-        <div className="section-head with-step">
-          <span className="step-badge">1</span>
-          <h2>Chọn loại hình cơ sở kinh doanh</h2>
-        </div>
+          <section className="section-card chooser-card">
+            <div className="section-head with-step">
+              <span className="step-badge">1</span>
+              <h2>Chọn loại hình cơ sở kinh doanh</h2>
+            </div>
 
-        <div className="business-grid" role="list" aria-label="Danh sách loại hình kinh doanh">
-          {businessTypes.map((item) => {
-            const active = item.id === selectedType
+            <div className="business-grid" role="list" aria-label="Danh sách loại hình kinh doanh">
+              {businessTypes.map((item) => {
+                const active = item.id === selectedType
 
-            return (
-              <button
-                key={item.id}
-                type="button"
-                className={`business-card ${active ? 'is-active' : ''}`}
-                onClick={() => {
-                  setSelectedType(item.id)
-                  setIsAgreed(false)
-                }}
-              >
-                <span className="business-badge" aria-hidden="true">
-                  <item.icon />
-                </span>
-                <span>{item.label}</span>
-              </button>
-            )
-          })}
-        </div>
-      </section>
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={`business-card ${active ? 'is-active' : ''}`}
+                    onClick={() => {
+                      setSelectedType(item.id)
+                      setIsAgreed(false)
+                    }}
+                  >
+                    <span className="business-badge" aria-hidden="true">
+                      <item.icon />
+                    </span>
+                    <span>{item.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </section>
+        </>
+      )}
 
       <div ref={registerSectionRef}>
         {isRegisterView ? (
@@ -636,6 +646,8 @@ function App() {
             setHotelRooms={setHotelRooms}
             feeResult={feeResult}
           />
+        ) : activeView === 'performance' ? (
+          <PerformancePage />
         ) : null}
       </div>
 
@@ -662,7 +674,6 @@ function App() {
             </a>
           </div>
 
-          {/* Quicklink xem Điều khoản sử dụng ở chân trang */}
           <div style={{ textAlign: 'center', marginTop: '14px' }}>
             <button
               type="button"
@@ -686,7 +697,6 @@ function App() {
         </div>
       </footer>
 
-      {/* Modal hiển thị Điều khoản sử dụng khi bấm quicklink ở footer */}
       {isFooterTermsModalOpen && (
         <div className="register-terms-modal consent-modal-overlay" onClick={() => setIsFooterTermsModalOpen(false)}>
           <div className="consent-modal-wrapper" onClick={(e) => e.stopPropagation()}>
@@ -762,7 +772,7 @@ function App() {
                 </p>
                 <p className="terms-paragraph">
                   3.4. <strong>Trách nhiệm và Chế tài khi kê khai sai:</strong> Trường hợp kê khai sai, thiếu, giả mạo hoặc gian lận dẫn đến mức phí cấp phép thấp hơn mức thực tế phải nộp, Đơn vị sử dụng / Người đăng ký phải tự chịu trách nhiệm trước pháp luật và có nghĩa vụ:
-                  <br />a) Nộp bổ sung đầy đủ phần phí chênh lệch;
+                  <br />a) Nộp bổ bổ sung đầy đủ phần phí chênh lệch;
                   <br />b) Nộp tiền lãi chậm nộp tính trên phần chênh lệch theo ngày, áp dụng mức lãi suất chậm nộp theo quy định pháp luật về quản lý thuế;
                   <br />c) Chịu xử phạt vi phạm hành chính từ 10.000.000 VNĐ đến 30.000.000 VNĐ cho mỗi lần vi phạm theo Nghị định 131/2013/NĐ-CP và các văn bản sửa đổi, bổ sung.
                 </p>
@@ -826,7 +836,7 @@ function App() {
 
                 <h4 className="terms-section-title">ĐIỀU 8: ĐIỀU KHOẢN CHUNG</h4>
                 <p className="terms-paragraph">
-                  8.1. <strong>Sửa đổi, bổ sung:</strong> Trung tâm có quyền cập nhật, sửa đổi Điều khoản này khi cần thiết. Phiên bản áp dụng đối với Đơn vị sử dụng / Người đăng ký là phiên bản được hiển thị trên hệ thống tại thời điểm Đơn vị sử dụng / Người đăng ký nhấn chấp thuận và tạo đơn thành công.
+                  8.1. <strong>Sửa đổi, bổ bổ sung:</strong> Trung tâm có quyền cập nhật, sửa đổi Điều khoản này khi cần thiết. Phiên bản áp dụng đối với Đơn vị sử dụng / Người đăng ký là phiên bản được hiển thị trên hệ thống tại thời điểm Đơn vị sử dụng / Người đăng ký nhấn chấp thuận và tạo đơn thành công.
                 </p>
                 <p className="terms-paragraph">
                   8.2. <strong>Giá trị giao kết:</strong> Việc Đơn vị sử dụng / Người đăng ký đánh dấu (check) vào ô chấp thuận và tiếp tục quy trình kê khai/đăng ký được xác nhận là đã hiểu rõ và hoàn toàn đồng ý với toàn bộ nội dung của Điều khoản sử dụng và cam kết thực hiện các nghĩa vụ quy định tại Điều khoản này. Việc đồng ý này bao gồm cung cấp các thông tin về kỹ thuật cần thiết để làm bằng chứng chấp thuận Điều khoản, bao gồm nhưng không giới hạn ở địa chỉ IP, User-Agent, thời gian chính xác, vị trí, tọa độ, thiết bị.
