@@ -9,9 +9,12 @@ const performanceTypes = [
 ]
 
 function PerformancePage() {
-  // Ban đầu chưa chọn loại hình nào
   const [selectedType, setSelectedType] = useState('')
   const [ticketMode, setTicketMode] = useState('free') // 'paid' | 'free'
+
+  // Khai báo trước các biến xác định loại hình để tránh lỗi ReferenceError
+  const isConcert = selectedType === 'concert'
+  const isHotelOrTeaRoom = ['hotel_4plus', 'hotel_3minus', 'tea_room'].includes(selectedType)
 
   // --- THÔNG TIN ĐƠN VỊ TỔ CHỨC ---
   const [orgName, setOrgName] = useState('')
@@ -26,14 +29,16 @@ function PerformancePage() {
   const [orgWard, setOrgWard] = useState('')
   const [orgStreet, setOrgStreet] = useState('')
 
-  // --- THÔNG TIN CHƯƠNG TRÌNH BIỂU DIỄN (Dành cho Khách sạn / Phòng trà khi có bán vé) ---
+  // --- THÔNG TIN CHƯƠNG TRÌNH BIỂU DIỄN (KHI CÓ BÁN VÉ) ---
   const [showProgramName, setShowProgramName] = useState('')
   const [showProgramTime, setShowProgramTime] = useState('')
   const [showCity, setShowCity] = useState('')
   const [showWard, setShowWard] = useState('')
   const [showStreet, setShowStreet] = useState('')
-  const [expectedAudience, setExpectedAudience] = useState('')
-  const [expectedTicketPrice, setExpectedTicketPrice] = useState('')
+  
+  // Biến phục vụ công thức tính phí có bán vé
+  const [venueCapacity, setVenueCapacity] = useState('') // sức chứa nơi biểu diễn
+  const [avgTicketPrice, setAvgTicketPrice] = useState('') // bình quân giá vé
 
   // Dành riêng cho Concert
   const [representative, setRepresentative] = useState('')
@@ -41,20 +46,16 @@ function PerformancePage() {
   const [contactPhonePrefix, setContactPhonePrefix] = useState('+84')
   const [contactPhone, setContactPhone] = useState('')
   const [contactEmail, setContactEmail] = useState('')
-  
-  // Người liên hệ (Concert)
   const [contactName, setContactName] = useState('')
   const [position, setPosition] = useState('')
   const [contactPersonPhonePrefix, setContactPersonPhonePrefix] = useState('+84')
   const [contactPersonPhone, setContactPersonPhone] = useState('')
   const [contactPersonEmail, setContactPersonEmail] = useState('')
-  
-  // Địa chỉ liên hệ (Concert)
   const [contactCity, setContactCity] = useState('')
   const [contactWard, setContactWard] = useState('')
   const [contactStreet, setContactStreet] = useState('')
 
-  // --- THÔNG TIN CHƯƠNG TRÌNH BIỂU DIỄN (CONCERT) ---
+  // Concert program info
   const [concertProgramName, setConcertProgramName] = useState('')
   const [concertTime, setConcertTime] = useState('')
   const [concertCity, setConcertCity] = useState('')
@@ -89,20 +90,41 @@ function PerformancePage() {
     setSongs(songs.map(s => s.id === id ? { ...s, [field]: value } : s))
   }
 
+  // TÍNH TOÁN PHÍ BẢN QUYỀN THEO CÔNG THỨC
+  const calculateFee = () => {
+    if (isConcert) {
+      // Concert luôn tính theo: 3% * 70% * sức chứa nơi biểu diễn * bình quân giá vé[cite: 24]
+      const cap = parseFloat(concertAudience) || 0
+      const price = parseFloat(concertTicketPrice) || 0
+      return 0.03 * 0.7 * cap * price
+    }
+
+    if (ticketMode === 'paid') {
+      // Có bán vé: 3% * 70% * sức chứa nơi biểu diễn * bình quân giá vé[cite: 24]
+      const cap = parseFloat(venueCapacity) || 0
+      const price = parseFloat(avgTicketPrice) || 0
+      return 0.03 * 0.7 * cap * price
+    } else {
+      // Không bán vé: Mức phí cố định * Số lượng tác phẩm sử dụng (ví dụ 500.000đ/tác phẩm)[cite: 25]
+      const fixedRatePerSong = 500000
+      const totalSongsCount = songs.length
+      return fixedRatePerSong * totalSongsCount
+    }
+  }
+
+  const estimatedFee = calculateFee()
+
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!isAgreed) return
-    alert('Đăng ký thành công!')
+    alert(`Đăng ký thành công! Dự kiến phí bản quyền: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(estimatedFee)}`)
   }
-
-  const isHotelOrTeaRoom = ['hotel_4plus', 'hotel_3minus', 'tea_room'].includes(selectedType)
-  const isConcert = selectedType === 'concert'
 
   return (
     <div className="register-page-shell">
       <form onSubmit={handleSubmit} className="register-page-shell">
         
-        {/* PHẦN 01: LOẠI HÌNH KINH DOANH (LUÔN HIỂN THỊ) */}
+        {/* PHẦN 01: LOẠI HÌNH KINH DOANH */}
         <section className="register-panel-card performance-panel">
           <div className="register-section">
             <div className="register-section-head">
@@ -133,8 +155,7 @@ function PerformancePage() {
                   </div>
                 </div>
 
-                {/* TÙY CHỌN BÁN VÉ CHỈ HIỂN THỊ KHI ĐÃ CHỌN LOẠI HÌNH */}
-                {selectedType !== '' && (
+                {selectedType !== '' && !isConcert && (
                   <div className="business-form-field full-width performance-ticket-field">
                     <div className="ticket-mode-group-row" style={{ display: 'flex', gap: '24px', alignItems: 'center', marginTop: '4px' }}>
                       <label className="business-checkbox-label" style={{ cursor: 'pointer' }}>
@@ -166,12 +187,9 @@ function PerformancePage() {
           </div>
         </section>
 
-        {/* ------------------------------------------------------------- */}
-        {/* FORM MẪU 1: KHÁCH SẠN / PHÒNG TRÀ KHÔNG CÓ LIVE BAND          */}
-        {/* ------------------------------------------------------------- */}
+        {/* FORM CHO KHÁCH SẠN / PHÒNG TRÀ */}
         {isHotelOrTeaRoom && (
           <>
-            {/* PHẦN 02: THÔNG TIN ĐƠN VỊ TỔ CHỨC */}
             <section className="register-panel-card">
               <div className="register-section">
                 <div className="register-section-head">
@@ -320,7 +338,7 @@ function PerformancePage() {
               </div>
             </section>
 
-            {/* PHẦN 03: THÔNG TIN CHƯƠNG TRÌNH BIỂU DIỄN (CHỈ HIỆN KHI TÍCH "CÓ BÁN VÉ") */}
+            {/* THÔNG TIN CHƯƠNG TRÌNH BIỂU DIỄN (HIỆN KHI CÓ BÁN VÉ) */}
             {ticketMode === 'paid' && (
               <section className="register-panel-card">
                 <div className="register-section">
@@ -411,14 +429,14 @@ function PerformancePage() {
 
                       <div className="business-form-field">
                         <label className="business-form-label">
-                          Số khán giả dự kiến <span className="required-star">*</span>
+                          Sức chứa nơi biểu diễn <span className="required-star">*</span>
                         </label>
                         <div className="business-input-wrapper">
                           <input
-                            type="text"
-                            placeholder="text input"
-                            value={expectedAudience}
-                            onChange={(e) => setExpectedAudience(e.target.value)}
+                            type="number"
+                            placeholder="Nhập số lượng chỗ ngồi / sức chứa"
+                            value={venueCapacity}
+                            onChange={(e) => setVenueCapacity(e.target.value)}
                             required
                           />
                         </div>
@@ -426,14 +444,14 @@ function PerformancePage() {
 
                       <div className="business-form-field">
                         <label className="business-form-label">
-                          Giá vé dự kiến <span className="required-star">*</span>
+                          Bình quân giá vé (VNĐ) <span className="required-star">*</span>
                         </label>
                         <div className="business-input-wrapper">
                           <input
-                            type="text"
-                            placeholder="text input"
-                            value={expectedTicketPrice}
-                            onChange={(e) => setExpectedTicketPrice(e.target.value)}
+                            type="number"
+                            placeholder="Nhập giá vé bình quân"
+                            value={avgTicketPrice}
+                            onChange={(e) => setAvgTicketPrice(e.target.value)}
                             required
                           />
                         </div>
@@ -445,7 +463,7 @@ function PerformancePage() {
               </section>
             )}
 
-            {/* PHẦN DANH SÁCH TÁC PHẨM BIỂU DIỄN (Bước 3 nếu không bán vé, Bước 4 nếu có bán vé) */}
+            {/* DANH SÁCH TÁC PHẨM BIỂU DIỄN */}
             <section className="register-panel-card">
               <div className="register-section">
                 <div className="register-section-head" style={{ justifyContent: 'space-between' }}>
@@ -551,6 +569,11 @@ function PerformancePage() {
                   </div>
                 </div>
 
+                {/* Hiển thị phí tạm tính */}
+                <div style={{ marginTop: '16px', color: '#93c5fd', fontSize: '0.95rem', fontWeight: '600' }}>
+                  Phí bản quyền ước tính: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(estimatedFee)}
+                </div>
+
                 {/* Cam kết & Nút Gửi */}
                 <div className="business-commitment-container" style={{ marginTop: '24px' }}>
                   <label className="business-checkbox-label">
@@ -578,12 +601,9 @@ function PerformancePage() {
           </>
         )}
 
-        {/* ------------------------------------------------------------- */}
-        {/* FORM MẪU 2: CONCERT (CÓ SỬ DỤNG BẢN GHI)                       */}
-        {/* ------------------------------------------------------------- */}
+        {/* FORM CHO CONCERT */}
         {isConcert && (
           <>
-            {/* PHẦN 02: THÔNG TIN ĐƠN VỊ TỔ CHỨC */}
             <section className="register-panel-card">
               <div className="register-section">
                 <div className="register-section-head">
@@ -862,7 +882,6 @@ function PerformancePage() {
               </div>
             </section>
 
-            {/* PHẦN 03: THÔNG TIN CHƯƠNG TRÌNH BIỂU DIỄN */}
             <section className="register-panel-card">
               <div className="register-section">
                 <div className="register-section-head">
@@ -952,11 +971,11 @@ function PerformancePage() {
 
                     <div className="business-form-field">
                       <label className="business-form-label">
-                        Số khán giả dự kiến <span className="required-star">*</span>
+                        Sức chứa / Số khán giả dự kiến <span className="required-star">*</span>
                       </label>
                       <div className="business-input-wrapper">
                         <input
-                          type="text"
+                          type="number"
                           placeholder="text input"
                           value={concertAudience}
                           onChange={(e) => setConcertAudience(e.target.value)}
@@ -967,11 +986,11 @@ function PerformancePage() {
 
                     <div className="business-form-field">
                       <label className="business-form-label">
-                        Giá vé dự kiến <span className="required-star">*</span>
+                        Bình quân giá vé dự kiến <span className="required-star">*</span>
                       </label>
                       <div className="business-input-wrapper">
                         <input
-                          type="text"
+                          type="number"
                           placeholder="text input"
                           value={concertTicketPrice}
                           onChange={(e) => setConcertTicketPrice(e.target.value)}
@@ -985,7 +1004,6 @@ function PerformancePage() {
               </div>
             </section>
 
-            {/* PHẦN 04: DANH SÁCH TÁC PHẨM BIỂU DIỄN */}
             <section className="register-panel-card">
               <div className="register-section">
                 <div className="register-section-head" style={{ justifyContent: 'space-between' }}>
@@ -1089,6 +1107,11 @@ function PerformancePage() {
                       </div>
                     ))}
                   </div>
+                </div>
+
+                {/* Hiển thị phí tạm tính cho Concert */}
+                <div style={{ marginTop: '16px', color: '#93c5fd', fontSize: '0.95rem', fontWeight: '600' }}>
+                  Phí bản quyền ước tính: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(estimatedFee)}
                 </div>
 
                 {/* Cam kết & Nút Gửi */}
