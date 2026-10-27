@@ -3,6 +3,7 @@ import './App.css'
 import logo from './assets/Appa-cmc-nen-toi.png'
 import RegisterPage from './pages/RegisterPage'
 import PerformancePage from './pages/PerformancePage'
+import CopyPage from './pages/CopyPage'
 import { cities, getWardsByCity, getActiveRegion } from './data/vietnamLocations'
 
 function DocumentIcon() {
@@ -526,7 +527,7 @@ function App() {
           {[
             { id: 'register', label: 'CƠ SỞ KINH DOANH' },
             { id: 'performance', label: 'TỔ CHỨC BIỂU DIỄN' },
-            // { id: 'copy', label: 'ĐĂNG KÝ SAO CHÉP' },
+            { id: 'copy', label: 'ĐĂNG KÝ SAO CHÉP' },
             // { id: 'lookup', label: 'TRA CỨU ĐĂNG KÝ' },
           ].map((tab) => {
             const isActive = activeView === tab.id
@@ -648,6 +649,8 @@ function App() {
           />
         ) : activeView === 'performance' ? (
           <PerformancePage />
+        ) : activeView === 'copy' ? (
+          <CopyPage />
         ) : null}
       </div>
 

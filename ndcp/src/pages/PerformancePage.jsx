@@ -11,7 +11,7 @@ const performanceTypes = [
 function PerformancePage() {
   // Ban đầu chưa chọn loại hình nào
   const [selectedType, setSelectedType] = useState('')
-  const [ticketMode, setTicketMode] = useState('paid') // 'paid' | 'free'
+  const [ticketMode, setTicketMode] = useState('free') // 'paid' | 'free'
 
   // --- THÔNG TIN ĐƠN VỊ TỔ CHỨC ---
   const [orgName, setOrgName] = useState('')
@@ -22,14 +22,18 @@ function PerformancePage() {
   const [phonePrefix, setPhonePrefix] = useState('+84')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
-  const [programName, setProgramName] = useState('')
-  const [programTime, setProgramTime] = useState('')
   const [orgCity, setOrgCity] = useState('')
   const [orgWard, setOrgWard] = useState('')
   const [orgStreet, setOrgStreet] = useState('')
-  const [perfCity, setPerfCity] = useState('')
-  const [perfWard, setPerfWard] = useState('')
-  const [perfStreet, setPerfStreet] = useState('')
+
+  // --- THÔNG TIN CHƯƠNG TRÌNH BIỂU DIỄN (Dành cho Khách sạn / Phòng trà khi có bán vé) ---
+  const [showProgramName, setShowProgramName] = useState('')
+  const [showProgramTime, setShowProgramTime] = useState('')
+  const [showCity, setShowCity] = useState('')
+  const [showWard, setShowWard] = useState('')
+  const [showStreet, setShowStreet] = useState('')
+  const [expectedAudience, setExpectedAudience] = useState('')
+  const [expectedTicketPrice, setExpectedTicketPrice] = useState('')
 
   // Dành riêng cho Concert
   const [representative, setRepresentative] = useState('')
@@ -56,8 +60,8 @@ function PerformancePage() {
   const [concertCity, setConcertCity] = useState('')
   const [concertWard, setConcertWard] = useState('')
   const [concertStreet, setConcertStreet] = useState('')
-  const [expectedAudience, setExpectedAudience] = useState('')
-  const [expectedTicketPrice, setExpectedTicketPrice] = useState('')
+  const [concertAudience, setConcertAudience] = useState('')
+  const [concertTicketPrice, setConcertTicketPrice] = useState('')
 
   // --- DANH SÁCH TÁC PHẨM BIỂU DIỄN ---
   const [songs, setSongs] = useState([
@@ -311,91 +315,142 @@ function PerformancePage() {
                       </div>
                     </div>
 
-                    <div className="business-form-field">
-                      <label className="business-form-label">
-                        Tên chương trình <span className="required-star">*</span>
-                      </label>
-                      <div className="business-input-wrapper">
-                        <input
-                          type="text"
-                          placeholder="text input"
-                          value={programName}
-                          onChange={(e) => setProgramName(e.target.value)}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="business-form-field">
-                      <label className="business-form-label">
-                        Thời gian <span className="required-star">*</span>
-                      </label>
-                      <div className="business-input-wrapper">
-                        <input
-                          type="text"
-                          placeholder="text input"
-                          value={programTime}
-                          onChange={(e) => setProgramTime(e.target.value)}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="business-form-field full-width">
-                      <label className="business-form-label">
-                        Địa điểm biểu diễn âm nhạc <span className="required-star">*</span>
-                      </label>
-                      <div className="business-address-row" style={{ marginBottom: '12px' }}>
-                        <div className="business-input-wrapper select-wrapper">
-                          <select
-                            value={perfCity}
-                            onChange={(e) => {
-                              setPerfCity(e.target.value)
-                              setPerfWard('')
-                            }}
-                            required
-                          >
-                            <option value="">Chọn tỉnh / thành phố</option>
-                            {cities.map((c) => (
-                              <option key={c.name} value={c.name}>{c.name}</option>
-                            ))}
-                          </select>
-                        </div>
-                        <div className="business-input-wrapper select-wrapper">
-                          <select
-                            value={perfWard}
-                            onChange={(e) => setPerfWard(e.target.value)}
-                            required
-                          >
-                            <option value="">Chọn phường / xã</option>
-                            {getWardsByCity(perfCity).map((w) => (
-                              <option key={w} value={w}>{w}</option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                      <div className="business-input-wrapper business-address-street">
-                        <input
-                          type="text"
-                          placeholder="Nhập số nhà, tên đường"
-                          value={perfStreet}
-                          onChange={(e) => setPerfStreet(e.target.value)}
-                          required
-                        />
-                      </div>
-                    </div>
-
                   </div>
                 </div>
               </div>
             </section>
 
-            {/* PHẦN 03: DANH SÁCH TÁC PHẨM BIỂU DIỄN */}
+            {/* PHẦN 03: THÔNG TIN CHƯƠNG TRÌNH BIỂU DIỄN (CHỈ HIỆN KHI TÍCH "CÓ BÁN VÉ") */}
+            {ticketMode === 'paid' && (
+              <section className="register-panel-card">
+                <div className="register-section">
+                  <div className="register-section-head">
+                    <span className="register-step-number">03</span>
+                    <h3>THÔNG TIN CHƯƠNG TRÌNH BIỂU DIỄN</h3>
+                  </div>
+                  <p className="business-sub-desc" style={{ marginTop: '0' }}>
+                    Vui lòng cung cấp đầy đủ và chính xác các thông tin theo yêu cầu dưới đây.
+                  </p>
+
+                  <div className="business-form-container">
+                    <div className="business-form-grid">
+                      
+                      <div className="business-form-field">
+                        <label className="business-form-label">
+                          Tên chương trình <span className="required-star">*</span>
+                        </label>
+                        <div className="business-input-wrapper">
+                          <input
+                            type="text"
+                            placeholder="text input"
+                            value={showProgramName}
+                            onChange={(e) => setShowProgramName(e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="business-form-field">
+                        <label className="business-form-label">
+                          Thời gian <span className="required-star">*</span>
+                        </label>
+                        <div className="business-input-wrapper">
+                          <input
+                            type="text"
+                            placeholder="text input"
+                            value={showProgramTime}
+                            onChange={(e) => setShowProgramTime(e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="business-form-field full-width">
+                        <label className="business-form-label">
+                          Địa điểm tổ chức <span className="required-star">*</span>
+                        </label>
+                        <div className="business-address-row" style={{ marginBottom: '12px' }}>
+                          <div className="business-input-wrapper select-wrapper">
+                            <select
+                              value={showCity}
+                              onChange={(e) => {
+                                setShowCity(e.target.value)
+                                setShowWard('')
+                              }}
+                              required
+                            >
+                              <option value="">Chọn tỉnh / thành phố</option>
+                              {cities.map((c) => (
+                                <option key={c.name} value={c.name}>{c.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="business-input-wrapper select-wrapper">
+                            <select
+                              value={showWard}
+                              onChange={(e) => setShowWard(e.target.value)}
+                              required
+                            >
+                              <option value="">Chọn phường / xã</option>
+                              {getWardsByCity(showCity).map((w) => (
+                                <option key={w} value={w}>{w}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                        <div className="business-input-wrapper business-address-street">
+                          <input
+                            type="text"
+                            placeholder="Nhập số nhà, tên đường"
+                            value={showStreet}
+                            onChange={(e) => setShowStreet(e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="business-form-field">
+                        <label className="business-form-label">
+                          Số khán giả dự kiến <span className="required-star">*</span>
+                        </label>
+                        <div className="business-input-wrapper">
+                          <input
+                            type="text"
+                            placeholder="text input"
+                            value={expectedAudience}
+                            onChange={(e) => setExpectedAudience(e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="business-form-field">
+                        <label className="business-form-label">
+                          Giá vé dự kiến <span className="required-star">*</span>
+                        </label>
+                        <div className="business-input-wrapper">
+                          <input
+                            type="text"
+                            placeholder="text input"
+                            value={expectedTicketPrice}
+                            onChange={(e) => setExpectedTicketPrice(e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* PHẦN DANH SÁCH TÁC PHẨM BIỂU DIỄN (Bước 3 nếu không bán vé, Bước 4 nếu có bán vé) */}
             <section className="register-panel-card">
               <div className="register-section">
                 <div className="register-section-head" style={{ justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span className="register-step-number">03</span>
+                    <span className="register-step-number">{ticketMode === 'paid' ? '04' : '03'}</span>
                     <h3>DANH SÁCH TÁC PHẨM BIỂU DIỄN</h3>
                   </div>
                   <button
@@ -542,7 +597,6 @@ function PerformancePage() {
                 <div className="business-form-container">
                   <div className="business-form-grid">
                     
-                    {/* Tên đơn vị tổ chức & MST / Giấy ĐKKD */}
                     <div className="business-form-field">
                       <label className="business-form-label">
                         Tên đơn vị tổ chức <span className="required-star">*</span>
@@ -573,7 +627,6 @@ function PerformancePage() {
                       </div>
                     </div>
 
-                    {/* Người đại diện & Người đại diện pháp luật */}
                     <div className="business-form-field">
                       <label className="business-form-label">
                         Người đại diện <span className="required-star">*</span>
@@ -604,7 +657,6 @@ function PerformancePage() {
                       </div>
                     </div>
 
-                    {/* Số điện thoại & Email */}
                     <div className="business-form-field">
                       <label className="business-form-label">
                         Số điện thoại <span className="required-star">*</span>
@@ -646,7 +698,6 @@ function PerformancePage() {
                       </div>
                     </div>
 
-                    {/* Địa chỉ trụ sở */}
                     <div className="business-form-field full-width">
                       <label className="business-form-label">
                         Địa chỉ trụ sở <span className="required-star">*</span>
@@ -691,7 +742,6 @@ function PerformancePage() {
                       </div>
                     </div>
 
-                    {/* Họ tên người liên hệ & Chức vụ */}
                     <div className="business-form-field">
                       <label className="business-form-label">
                         Họ tên người liên hệ <span className="required-star">*</span>
@@ -722,7 +772,6 @@ function PerformancePage() {
                       </div>
                     </div>
 
-                    {/* Số điện thoại liên hệ & Email liên hệ */}
                     <div className="business-form-field">
                       <label className="business-form-label">
                         Số điện thoại liên hệ <span className="required-star">*</span>
@@ -764,7 +813,6 @@ function PerformancePage() {
                       </div>
                     </div>
 
-                    {/* Địa chỉ liên hệ */}
                     <div className="business-form-field full-width">
                       <label className="business-form-label">
                         Địa chỉ liên hệ <span className="required-star">*</span>
@@ -910,8 +958,8 @@ function PerformancePage() {
                         <input
                           type="text"
                           placeholder="text input"
-                          value={expectedAudience}
-                          onChange={(e) => setExpectedAudience(e.target.value)}
+                          value={concertAudience}
+                          onChange={(e) => setConcertAudience(e.target.value)}
                           required
                         />
                       </div>
@@ -925,8 +973,8 @@ function PerformancePage() {
                         <input
                           type="text"
                           placeholder="text input"
-                          value={expectedTicketPrice}
-                          onChange={(e) => setExpectedTicketPrice(e.target.value)}
+                          value={concertTicketPrice}
+                          onChange={(e) => setConcertTicketPrice(e.target.value)}
                           required
                         />
                       </div>
