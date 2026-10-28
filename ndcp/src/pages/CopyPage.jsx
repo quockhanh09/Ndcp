@@ -53,7 +53,7 @@ const productionFormatOptions = [
 ]
 
 function CopyPage() {
-  const [selectedType, setSelectedType] = useState('mv_audiovisual') // Mặc định ban đầu là Video ca nhạc
+  const [selectedType, setSelectedType] = useState('movie') // Mặc định ban đầu
 
   // --- THÔNG TIN ĐƠN VỊ ĐĂNG KÝ (BƯỚC 02) ---
   const [orgNameVN, setOrgNameVN] = useState('')
@@ -68,11 +68,9 @@ function CopyPage() {
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [invoiceEmail, setInvoiceEmail] = useState('')
-  const [businessLicenseFile, setBusinessLicenseFile] = useState({
-    name: 'Giay_phep_kinh_doanh.pdf',
-    size: '94 KB of 94 KB',
-    status: 'Hoàn tất'
-  })
+  
+  // Để trống ban đầu, chỉ hiện khi có file tải lên
+  const [businessLicenseFile, setBusinessLicenseFile] = useState(null)
 
   // --- CHI TIẾT NỘI DUNG ĐĂNG KÝ (BƯỚC 03 CHO TỪNG LOẠI) ---
   // 1. Phim điện ảnh
@@ -114,11 +112,8 @@ function CopyPage() {
     { id: 1, songTitle: '', albumTitle: '', performer: '', recordLink: '' }
   ])
 
-  const [excelFile, setExcelFile] = useState({
-    name: 'Danh_sach_ban_ghi_dang_ky_su_dung.excel',
-    size: '94 KB of 94 KB',
-    status: 'Hoàn tất'
-  })
+  // Để trống ban đầu, chỉ hiện khi chọn tải file lên và đã chọn file
+  const [excelFile, setExcelFile] = useState(null)
 
   // Cam kết
   const [isAgreed, setIsAgreed] = useState(false)
@@ -431,6 +426,7 @@ function CopyPage() {
                   </div>
                 </div>
 
+                {/* Chỉ hiện khung thông tin file khi đã có file tải lên */}
                 {businessLicenseFile && (
                   <div
                     style={{
@@ -552,19 +548,22 @@ function CopyPage() {
                           </div>
                         </div>
 
-                        <div className="business-form-field full-width">
-                          <label className="business-form-label">
-                            Khác <span className="required-star">*</span>
-                          </label>
-                          <div className="business-input-wrapper">
-                            <input
-                              type="text"
-                              placeholder="text input"
-                              value={otherUsageModel}
-                              onChange={(e) => setOtherUsageModel(e.target.value)}
-                            />
+                        {selectedUsageModel === 'Khác' && (
+                          <div className="business-form-field full-width">
+                            <label className="business-form-label">
+                              Khác <span className="required-star">*</span>
+                            </label>
+                            <div className="business-input-wrapper">
+                              <input
+                                type="text"
+                                placeholder="text input"
+                                value={otherUsageModel}
+                                onChange={(e) => setOtherUsageModel(e.target.value)}
+                                required
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </>
                     )}
 
@@ -617,19 +616,22 @@ function CopyPage() {
                           </div>
                         </div>
 
-                        <div className="business-form-field full-width">
-                          <label className="business-form-label">
-                            Khác <span className="required-star">*</span>
-                          </label>
-                          <div className="business-input-wrapper">
-                            <input
-                              type="text"
-                              placeholder="text input"
-                              value={otherAdMedia}
-                              onChange={(e) => setOtherAdMedia(e.target.value)}
-                            />
+                        {selectedAdMedia === 'Khác' && (
+                          <div className="business-form-field full-width">
+                            <label className="business-form-label">
+                              Khác <span className="required-star">*</span>
+                            </label>
+                            <div className="business-input-wrapper">
+                              <input
+                                type="text"
+                                placeholder="text input"
+                                value={otherAdMedia}
+                                onChange={(e) => setOtherAdMedia(e.target.value)}
+                                required
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </>
                     )}
 
@@ -652,19 +654,22 @@ function CopyPage() {
                           </div>
                         </div>
 
-                        <div className="business-form-field full-width">
-                          <label className="business-form-label">
-                            Khác <span className="required-star">*</span>
-                          </label>
-                          <div className="business-input-wrapper">
-                            <input
-                              type="text"
-                              placeholder="text input"
-                              value={otherPurpose}
-                              onChange={(e) => setOtherPurpose(e.target.value)}
-                            />
+                        {selectedPurpose === 'Khác' && (
+                          <div className="business-form-field full-width">
+                            <label className="business-form-label">
+                              Khác <span className="required-star">*</span>
+                            </label>
+                            <div className="business-input-wrapper">
+                              <input
+                                type="text"
+                                placeholder="text input"
+                                value={otherPurpose}
+                                onChange={(e) => setOtherPurpose(e.target.value)}
+                                required
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         <div className="business-form-field full-width">
                           <label className="business-form-label">
@@ -682,19 +687,22 @@ function CopyPage() {
                           </div>
                         </div>
 
-                        <div className="business-form-field full-width">
-                          <label className="business-form-label">
-                            Khác <span className="required-star">*</span>
-                          </label>
-                          <div className="business-input-wrapper">
-                            <input
-                              type="text"
-                              placeholder="text input"
-                              value={otherFormat}
-                              onChange={(e) => setOtherFormat(e.target.value)}
-                            />
+                        {selectedFormat === 'Khác' && (
+                          <div className="business-form-field full-width">
+                            <label className="business-form-label">
+                              Khác <span className="required-star">*</span>
+                            </label>
+                            <div className="business-input-wrapper">
+                              <input
+                                type="text"
+                                placeholder="text input"
+                                value={otherFormat}
+                                onChange={(e) => setOtherFormat(e.target.value)}
+                                required
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         <div className="business-form-field">
                           <label className="business-form-label">
@@ -747,19 +755,22 @@ function CopyPage() {
                           </div>
                         </div>
 
-                        <div className="business-form-field full-width">
-                          <label className="business-form-label">
-                            Khác <span className="required-star">*</span>
-                          </label>
-                          <div className="business-input-wrapper">
-                            <input
-                              type="text"
-                              placeholder="text input"
-                              value={otherMvPurpose}
-                              onChange={(e) => setOtherMvPurpose(e.target.value)}
-                            />
+                        {selectedMvPurpose === 'Khác' && (
+                          <div className="business-form-field full-width">
+                            <label className="business-form-label">
+                              Khác <span className="required-star">*</span>
+                            </label>
+                            <div className="business-input-wrapper">
+                              <input
+                                type="text"
+                                placeholder="text input"
+                                value={otherMvPurpose}
+                                onChange={(e) => setOtherMvPurpose(e.target.value)}
+                                required
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         <div className="business-form-field">
                           <label className="business-form-label">
@@ -807,19 +818,22 @@ function CopyPage() {
                           </div>
                         </div>
 
-                        <div className="business-form-field full-width">
-                          <label className="business-form-label">
-                            Khác <span className="required-star">*</span>
-                          </label>
-                          <div className="business-input-wrapper">
-                            <input
-                              type="text"
-                              placeholder="text input"
-                              value={otherFormat}
-                              onChange={(e) => setOtherFormat(e.target.value)}
-                            />
+                        {selectedFormat === 'Khác' && (
+                          <div className="business-form-field full-width">
+                            <label className="business-form-label">
+                              Khác <span className="required-star">*</span>
+                            </label>
+                            <div className="business-input-wrapper">
+                              <input
+                                type="text"
+                                placeholder="text input"
+                                value={otherFormat}
+                                onChange={(e) => setOtherFormat(e.target.value)}
+                                required
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         <div className="business-form-field">
                           <label className="business-form-label">
@@ -872,19 +886,22 @@ function CopyPage() {
                           </div>
                         </div>
 
-                        <div className="business-form-field full-width">
-                          <label className="business-form-label">
-                            Khác <span className="required-star">*</span>
-                          </label>
-                          <div className="business-input-wrapper">
-                            <input
-                              type="text"
-                              placeholder="text input"
-                              value={otherArcadePurpose}
-                              onChange={(e) => setOtherArcadePurpose(e.target.value)}
-                            />
+                        {selectedArcadePurpose === 'Khác' && (
+                          <div className="business-form-field full-width">
+                            <label className="business-form-label">
+                              Khác <span className="required-star">*</span>
+                            </label>
+                            <div className="business-input-wrapper">
+                              <input
+                                type="text"
+                                placeholder="text input"
+                                value={otherArcadePurpose}
+                                onChange={(e) => setOtherArcadePurpose(e.target.value)}
+                                required
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         <div className="business-form-field full-width">
                           <label className="business-form-label">
@@ -902,19 +919,22 @@ function CopyPage() {
                           </div>
                         </div>
 
-                        <div className="business-form-field full-width">
-                          <label className="business-form-label">
-                            Khác <span className="required-star">*</span>
-                          </label>
-                          <div className="business-input-wrapper">
-                            <input
-                              type="text"
-                              placeholder="text input"
-                              value={otherFormat}
-                              onChange={(e) => setOtherFormat(e.target.value)}
-                            />
+                        {selectedFormat === 'Khác' && (
+                          <div className="business-form-field full-width">
+                            <label className="business-form-label">
+                              Khác <span className="required-star">*</span>
+                            </label>
+                            <div className="business-input-wrapper">
+                              <input
+                                type="text"
+                                placeholder="text input"
+                                value={otherFormat}
+                                onChange={(e) => setOtherFormat(e.target.value)}
+                                required
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         <div className="business-form-field">
                           <label className="business-form-label">
@@ -1120,6 +1140,7 @@ function CopyPage() {
                       Tải lên file danh sách bản ghi
                     </button>
 
+                    {/* Chỉ hiện khung thông tin file khi người dùng đã chọn file */}
                     {excelFile && (
                       <div
                         style={{

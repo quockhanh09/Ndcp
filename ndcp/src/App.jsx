@@ -5,6 +5,7 @@ import RegisterPage from './pages/RegisterPage'
 import PerformancePage from './pages/PerformancePage'
 import CopyPage from './pages/CopyPage'
 import { cities, getWardsByCity, getActiveRegion } from './data/vietnamLocations'
+import ComingSoonPage from './pages/ComingSoonPage' // <-- Import trang Coming Soon vừa tạo
 
 function DocumentIcon() {
   return (
@@ -198,14 +199,26 @@ function calculateTierQuantity(area, min, max) {
 }
 
 function App() {
+  // =========================================================================
+  // BIẾN BẬT / TẮT TRANG COMING SOON TẠM THỜI:
+  // - Đặt là `true` để hiển thị trang Coming Soon.
+  // - Đặt là `false` để quay lại toàn bộ code chức năng chính bình thường.
+  // =========================================================================
+  const IS_COMING_SOON = true;
+
+  if (IS_COMING_SOON) {
+    return <ComingSoonPage />;
+  }
+
+  // =========================================================================
+  // TOÀN BỘ CODE CHÍNH BÊN DƯỚI GIỮ NGUYÊN HOÀN TOÀN
+  // =========================================================================
   const [activeView, setActiveView] = useState('performance')
   const [selectedType, setSelectedType] = useState(businessTypes[0].id)
 
-  // Trụ sở doanh nghiệp
   const [selectedCity, setSelectedCity] = useState('')
   const [selectedWard, setSelectedWard] = useState('')
 
-  // Cơ sở kinh doanh
   const [storeCity, setStoreCity] = useState('')
   const [storeWard, setStoreWard] = useState('')
   const [selectedPaymentCycle, setSelectedPaymentCycle] = useState('')
@@ -224,7 +237,6 @@ function App() {
   const [hotelRooms, setHotelRooms] = useState('')
   const [feeResult, setFeeResult] = useState(null)
 
-  // State quản lý việc mở modal Điều khoản sử dụng từ Footer
   const [isFooterTermsModalOpen, setIsFooterTermsModalOpen] = useState(false)
 
   const registerSectionRef = useRef(null)
@@ -528,7 +540,6 @@ function App() {
             { id: 'register', label: 'CƠ SỞ KINH DOANH' },
             { id: 'performance', label: 'TỔ CHỨC BIỂU DIỄN' },
             { id: 'copy', label: 'ĐĂNG KÝ SAO CHÉP' },
-            // { id: 'lookup', label: 'TRA CỨU ĐĂNG KÝ' },
           ].map((tab) => {
             const isActive = activeView === tab.id
             return (
