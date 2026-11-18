@@ -1570,3 +1570,236 @@
     font-size: 0.85rem;
   }
 }
+
+/* =========================================================
+   LIGHT MODE STYLES
+   ========================================================= */
+
+/* Nền tổng của toàn trang khi ở Light Mode */
+html.light-mode body {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* Header & Thẻ điều hướng */
+html.light-mode .app-header-bar {
+  background: transparent;
+}
+
+html.light-mode .header-action {
+  color: #334155;
+}
+
+html.light-mode .header-action.is-active {
+  border-color: #0284c7;
+  background: #e0f2fe;
+  color: #0369a1;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.15);
+}
+
+html.light-mode .header-action-primary {
+  background: #65a30d;
+  color: #ffffff;
+}
+
+html.light-mode .header-action-primary:hover {
+  background: #4d7c0f;
+}
+
+/* Các khung Section Card, Hero Card, Chooser Card */
+html.light-mode .hero-card,
+html.light-mode .section-card,
+html.light-mode .register-panel-card,
+html.light-mode .chooser-card,
+html.light-mode .form-card {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+  color: #1e293b !important;
+}
+
+/* Hero Section */
+html.light-mode .hero-copy h1 {
+  color: #0f172a !important;
+}
+
+html.light-mode .hero-copy p {
+  color: #475569 !important;
+}
+
+html.light-mode .hero-math {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0284c7 !important;
+}
+
+html.light-mode .hero-math span:last-child {
+  color: #0369a1 !important;
+  text-shadow: none !important;
+}
+
+html.light-mode .hero-icon {
+  background: #e0f2fe !important;
+  border-color: #bae6fd !important;
+  color: #0284c7 !important;
+}
+
+/* Tiêu đề & Thẻ loại hình kinh doanh */
+html.light-mode .section-head h2 {
+  color: #0f172a !important;
+}
+
+html.light-mode .register-section-head h3 {
+  color: #0f172a !important;
+}
+
+html.light-mode .business-card {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+html.light-mode .business-card:hover {
+  background: #f1f5f9 !important;
+  border-color: #0284c7 !important;
+  color: #0284c7 !important;
+}
+
+html.light-mode .business-card.is-active {
+  background: #e0f2fe !important;
+  border-color: #0284c7 !important;
+  color: #0369a1 !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2) !important;
+}
+
+/* Input, Select, Form Controls */
+html.light-mode .business-input-wrapper input,
+html.light-mode .business-input-wrapper select,
+html.light-mode .register-select-box,
+html.light-mode .field select,
+html.light-mode .field input {
+  background: #ffffff !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+html.light-mode .business-input-wrapper input::placeholder,
+html.light-mode .field input::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.light-mode .business-form-label,
+html.light-mode .register-field-label,
+html.light-mode .field span {
+  color: #334155 !important;
+}
+
+html.light-mode .business-form-container {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Thêm các thuộc tính hỗ trợ đầy đủ cho văn bản và nhãn form ở chế độ Light Mode */
+html.light-mode .business-sub-desc,
+html.light-mode .step-badge,
+html.light-mode .register-step-number {
+  color: #334155 !important;
+}
+
+html.light-mode .business-checkbox-label {
+  color: #1e293b !important;
+}
+
+/* Kết quả bảng tính phí */
+html.light-mode .fee-summary-card {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light-mode .fee-hero {
+  background: linear-gradient(135deg, #e0f2fe, #bae6fd) !important;
+  color: #0369a1 !important;
+}
+
+html.light-mode .fee-hero p {
+  color: #0284c7 !important;
+}
+
+html.light-mode .fee-total-final {
+  color: #b45309 !important;
+}
+
+html.light-mode .fee-table-card th {
+  background: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+html.light-mode .fee-table-card td {
+  color: #334155 !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+
+html.light-mode .fee-table-card .total-row td {
+  background: #e0f2fe !important;
+  color: #0369a1 !important;
+}
+
+/* Footer */
+html.light-mode .app-footer-inner {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light-mode .app-footer-brand,
+html.light-mode .app-footer-brand-1 {
+  color: #1e293b !important;
+}
+
+html.light-mode .app-footer-contact-chip {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light-mode .app-footer-chip-label {
+  color: #64748b !important;
+}
+
+html.light-mode .app-footer-chip-value {
+  color: #0f172a !important;
+}
+
+/* Khung công thức tính chi phí (PerformancePage) */
+html.light-mode .fee-formula-title {
+  color: #0f172a !important;
+}
+
+html.light-mode .fee-formula-subtitle {
+  color: #0284c7 !important;
+}
+
+html.light-mode .fee-formula-box {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light-mode .fee-formula-value {
+  color: #0f172a !important;
+}
+
+html.light-mode .fee-formula-operator {
+  color: #64748b !important;
+}
+
+html.light-mode .fee-formula-chip {
+  background: #ffffff !important;
+  border-color: #94a3b8 !important;
+  color: #334155 !important;
+}
+
+html.light-mode .fee-formula-result {
+  background: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+

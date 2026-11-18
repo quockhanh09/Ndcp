@@ -5,7 +5,6 @@ import RegisterPage from './pages/RegisterPage'
 import PerformancePage from './pages/PerformancePage'
 import CopyPage from './pages/CopyPage'
 import { cities, getWardsByCity, getActiveRegion } from './data/vietnamLocations'
-import ComingSoonPage from './pages/ComingSoonPage' // <-- Import trang Coming Soon vừa tạo
 
 function DocumentIcon() {
   return (
@@ -199,26 +198,14 @@ function calculateTierQuantity(area, min, max) {
 }
 
 function App() {
-  // =========================================================================
-  // BIẾN BẬT / TẮT TRANG COMING SOON TẠM THỜI:
-  // - Đặt là `true` để hiển thị trang Coming Soon.
-  // - Đặt là `false` để quay lại toàn bộ code chức năng chính bình thường.
-  // =========================================================================
-  const IS_COMING_SOON = true;
-
-  if (IS_COMING_SOON) {
-    return <ComingSoonPage />;
-  }
-
-  // =========================================================================
-  // TOÀN BỘ CODE CHÍNH BÊN DƯỚI GIỮ NGUYÊN HOÀN TOÀN
-  // =========================================================================
   const [activeView, setActiveView] = useState('performance')
   const [selectedType, setSelectedType] = useState(businessTypes[0].id)
 
+  // Trụ sở doanh nghiệp
   const [selectedCity, setSelectedCity] = useState('')
   const [selectedWard, setSelectedWard] = useState('')
 
+  // Cơ sở kinh doanh
   const [storeCity, setStoreCity] = useState('')
   const [storeWard, setStoreWard] = useState('')
   const [selectedPaymentCycle, setSelectedPaymentCycle] = useState('')
@@ -237,7 +224,28 @@ function App() {
   const [hotelRooms, setHotelRooms] = useState('')
   const [feeResult, setFeeResult] = useState(null)
 
+  // State quản lý việc mở modal Điều khoản sử dụng từ Footer
   const [isFooterTermsModalOpen, setIsFooterTermsModalOpen] = useState(false)
+
+  // State quản lý chế độ Dark / Light mode
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('appa_theme') || 'dark'
+  })
+
+  useEffect(() => {
+    localStorage.setItem('appa_theme', theme)
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark-mode')
+      document.documentElement.classList.remove('light-mode')
+    } else {
+      document.documentElement.classList.add('light-mode')
+      document.documentElement.classList.remove('dark-mode')
+    }
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
+  }
 
   const registerSectionRef = useRef(null)
 
@@ -564,15 +572,28 @@ function App() {
           })}
         </nav>
 
-        <a
-          href="https://www.appa.org.vn/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="header-action header-action-primary"
-        >
-          Về trang chủ
-          <span className="header-action-icon-arrow" aria-hidden="true">↗</span>
-        </a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Nút chuyển đổi Dark/Light mode */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="header-action"
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}
+            title="Chuyển đổi giao diện Sáng/Tối"
+          >
+            {theme === 'dark' ? '☀️ Sáng' : '🌙 Tối'}
+          </button>
+
+          <a
+            href="https://www.appa.org.vn/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="header-action header-action-primary"
+          >
+            Về trang chủ
+            <span className="header-action-icon-arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
       </header>
 
       {activeView === 'register' && (
